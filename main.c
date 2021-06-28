@@ -131,6 +131,8 @@ static void gap_params_init(void)
 
     err_code = sd_ble_gap_ppcp_set(&gap_conn_params);
     APP_ERROR_CHECK(err_code);
+
+
 }
 
 
@@ -425,7 +427,7 @@ void bsp_event_handler(bsp_event_t event)
     switch (event)
     {
         case BSP_EVENT_SLEEP:
-            sleep_mode_enter();
+            //sleep_mode_enter();
             break;
 
         case BSP_EVENT_DISCONNECT:
@@ -766,6 +768,9 @@ void saadc_init(void)
  */
 int main(void)
 {
+
+    ret_code_t err_code;
+
     bool erase_bonds;
 
     // Initialize.
@@ -779,6 +784,11 @@ int main(void)
     gatt_init();
     services_init();
     advertising_init();
+
+    // Advertising Strength selected 
+    err_code = sd_ble_gap_tx_power_set(BLE_GAP_TX_POWER_ROLE_ADV, m_advertising.adv_handle, +4);
+    APP_ERROR_CHECK(err_code);
+
     conn_params_init();
 
     saadc_sampling_event_init();
