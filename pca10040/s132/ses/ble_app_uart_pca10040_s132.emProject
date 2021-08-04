@@ -97,6 +97,10 @@
       <file file_name="../../../main.c" />
       <file file_name="../config/sdk_config.h" />
       <file file_name="../../../main.h" />
+      <file file_name="../../../helper.c" />
+      <file file_name="../../../helper.h" />
+      <file file_name="../../../bluetooth.c" />
+      <file file_name="../../../bluetooth.h" />
     </folder>
     <folder Name="nRF_Segger_RTT">
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT.c" />

@@ -28,10 +28,12 @@
 #include "nrf_uarte.h"
 #endif
 
-#include "nrf_log.h"
-#include "nrf_log_ctrl.h"
-#include "nrf_log_default_backends.h"
 
+/* custom headers */
+#include "helper.h"
+
+
+/* Define */
 #define APP_BLE_CONN_CFG_TAG            1                                           /**< A tag identifying the SoftDevice BLE configuration. */
 
 #define DEVICE_NAME                     "nRF_Jihwan_Proto"                              /**< Name of device. Will be included in the advertising data. */
@@ -51,10 +53,9 @@
 #define NEXT_CONN_PARAMS_UPDATE_DELAY   APP_TIMER_TICKS(30000)                      /**< Time between each call to sd_ble_gap_conn_param_update after the first call (30 seconds). */
 #define MAX_CONN_PARAMS_UPDATE_COUNT    3                                           /**< Number of attempts before giving up the connection parameter negotiation. */
 
-#define DEAD_BEEF                       0xDEADBEEF                                  /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
 #define UART_TX_BUF_SIZE                256                                         /**< UART TX buffer size. */
 #define UART_RX_BUF_SIZE                256                                         /**< UART RX buffer size. */
 
 #define SAADC_SAMPLES_IN_BUFFER         4
-#define SAADC_SAMPLE_RATE               1500                                         /**< SAADC sample rate in ms. */               
+#define SAADC_SAMPLE_RATE               500                                         /**< SAADC sample rate in ms. */               
