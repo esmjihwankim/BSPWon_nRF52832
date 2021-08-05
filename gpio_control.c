@@ -2,6 +2,7 @@
 
 void control_table(ble_nus_evt_t * p_evt)
 {
+    int idx = 0;
     char buffer_rx[20] = "";
     if (p_evt->type == BLE_NUS_EVT_RX_DATA)
     {
@@ -21,18 +22,19 @@ void control_table(ble_nus_evt_t * p_evt)
                 }
 
             } while (err_code == NRF_ERROR_BUSY);
+            if(buffer_rx[i] == '<' || buffer_rx[i] == '>') continue;
+            buffer_rx[idx] = p_evt->params.rx_data.p_data[i];
+            idx++;
         }
         if (p_evt->params.rx_data.p_data[p_evt->params.rx_data.length - 1] == '\r')
         {
             while (app_uart_put('\n') == NRF_ERROR_BUSY);
         }
         
-        // parse 
-        
-
-
         // operate LED
-        
+        if(strcmp(buffer_rx, "LEDOFF") == 0) led_on(); 
+        else if(strcmp(buffer_rx, "LEDON") == 0) led_off(); 
+        else if(strcmp(buffer_rx, "LEDCASCADE")==0) led_cascade();
     }
     
 }
@@ -40,7 +42,13 @@ void control_table(ble_nus_evt_t * p_evt)
 
 void led_on(void)
 {
+    
 }
 void led_off(void)
 {
+    
+}
+void led_cascade(void)
+{
+    
 }
