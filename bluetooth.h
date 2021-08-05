@@ -1,3 +1,6 @@
+#ifndef _BLUETOOTH_H
+#define _BLUETOOTH_H
+
 #include <stdint.h>
 #include <string.h>
 #include "nordic_common.h"
@@ -74,3 +77,6 @@ void saadc_sampling_event_enable(void);
 void advertising_start(void);
 void saadc_init(void);
 void advertising_init(void);
+
+
+#endif

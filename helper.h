@@ -1,3 +1,7 @@
+
+#ifndef _HELPER_H
+#define _HELPER_H
+
 #include "bsp.h"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
@@ -10,3 +14,6 @@
 
 void timers_init(void);
 void log_init(void);
+
+
+#endif

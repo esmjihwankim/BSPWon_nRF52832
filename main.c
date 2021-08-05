@@ -10,6 +10,7 @@ int main(void)
     bool erase_bonds;
 
     // Initialize.
+    gpio_init();
     uart_init();
     log_init();
     timers_init();
