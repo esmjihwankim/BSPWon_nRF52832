@@ -1,5 +1,8 @@
 #include "gpio_control.h"
-
+#define PIN 00
+#define BTN1 13
+#define BTN2 14
+#define LED 17
 void control_table(ble_nus_evt_t * p_evt)
 {
     int idx = 0;
@@ -38,15 +41,22 @@ void control_table(ble_nus_evt_t * p_evt)
     }
     
 }
-
+void gpio_init()
+{
+  nrf_gpio_cfg_output(PIN);
+}
 
 void led_on(void)
 {
+
+    nrf_gpio_pin_clear(PIN);
     
 }
 void led_off(void)
 {
-    
+
+    nrf_gpio_pin_set(PIN);
+
 }
 void led_cascade(void)
 {
