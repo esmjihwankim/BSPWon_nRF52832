@@ -1,6 +1,4 @@
 #include "helper.h"
-#include "app_timer.h"
-
 
 
 /**@brief Function for initializing the timer module.

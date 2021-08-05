@@ -5,7 +5,6 @@
  */
 int main(void)
 {
-
     ret_code_t err_code;
 
     bool erase_bonds;

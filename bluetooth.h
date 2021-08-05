@@ -30,11 +30,12 @@
 #include "nrf_uarte.h"
 #endif
 
+#include "gpio_control.h"
 
 /* Define */
 #define APP_BLE_CONN_CFG_TAG            1                                           /**< A tag identifying the SoftDevice BLE configuration. */
 
-#define DEVICE_NAME                     "nRF_Jihwan_Proto"                              /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                     "WonResearch_nRF"                           /**< Name of device. Will be included in the advertising data. */
 #define NUS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
 
 #define APP_BLE_OBSERVER_PRIO           3                                           /**< Application's BLE observer priority. You shouldn't need to modify this value. */
