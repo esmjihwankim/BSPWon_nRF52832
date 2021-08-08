@@ -9,8 +9,21 @@
 #include "helper.h"
 #include "gpio_control.h"
 
+/*
+GPIOs for Toggling Event : PIN_1, PIN_2
+GPIOs for Cascade Action : LED_PIN_1,LED_PIN_2,LED_PIN_3,LED_PIN_4,LED_PIN_5
+*/
 
-#define LED_PIN_1 31
+#define TOGGLE_PIN_1 12
+#define TOGGLE_PIN_2 13
+
+#define LED_PIN_1 12
+#define LED_PIN_2 22
+#define LED_PIN_3 23 
+#define LED_PIN_4 24 
+#define LED_PIN_5 25 
+
+
 
 
 void gpio_init(void);

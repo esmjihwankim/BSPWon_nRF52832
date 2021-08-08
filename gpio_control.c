@@ -46,7 +46,6 @@ void control_table(ble_nus_evt_t * p_evt)
         else if(strcmp(buffer_rx, "LEDOFF") == 0) led_off(); 
         else if(strcmp(buffer_rx, "LEDCASCADE")==0) led_cascade();
     }
-    
 }
 
 
