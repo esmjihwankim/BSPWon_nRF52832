@@ -496,7 +496,33 @@ void advertising_start(void)
 
 static void timer_handler(nrf_timer_event_t event_type, void* p_context)
 {
+  static uint32_t i,x, val;
+  bool status1, status2, status3, status4;
   
+  val = (i++) % (5);
+  x = val + 22;
+  switch(event_type)
+  {
+    
+    case NRF_TIMER_EVENT_COMPARE0:
+    status1 = nrf_gpio_pin_out_read(LED_PIN_2);
+    status2 = nrf_gpio_pin_out_read(LED_PIN_3);
+    status3 = nrf_gpio_pin_out_read(LED_PIN_4);
+    status4 = nrf_gpio_pin_out_read(LED_PIN_5);
+    nrf_gpio_pin_toggle(x);
+    if ((status1 == 1) && (status2 == 1) && (status3 == 1) && (status4 == 1))
+    {
+      nrf_gpio_pin_clear(LED_PIN_2); // Turn off the LED
+      nrf_gpio_pin_clear(LED_PIN_3); // Turn off the LED
+      nrf_gpio_pin_clear(LED_PIN_4); // Turn off the LED
+      nrf_gpio_pin_clear(LED_PIN_5); // Turn off the LED
+    }
+    
+    break;
+    default:
+    // Nothing
+    break;
+  }
 }
 
 
@@ -504,6 +530,7 @@ void saadc_sampling_event_init(void)
 {
     ret_code_t err_code;
     err_code = nrf_drv_ppi_init();
+
     APP_ERROR_CHECK(err_code);
     
     nrf_drv_timer_config_t timer_config = NRF_DRV_TIMER_DEFAULT_CONFIG;
@@ -515,7 +542,6 @@ void saadc_sampling_event_init(void)
     uint32_t ticks = nrf_drv_timer_ms_to_ticks(&m_timer,SAADC_SAMPLE_RATE);
     nrf_drv_timer_extended_compare(&m_timer, NRF_TIMER_CC_CHANNEL0, ticks, NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK, false);
     nrf_drv_timer_enable(&m_timer);
-
     uint32_t timer_compare_event_addr = nrf_drv_timer_compare_event_address_get(&m_timer, NRF_TIMER_CC_CHANNEL0);
     uint32_t saadc_sample_event_addr = nrf_drv_saadc_sample_task_get();
 
