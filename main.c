@@ -13,6 +13,7 @@ int main(void)
     gpio_init();
     uart_init();
     log_init();
+    lfclk_config();
     timers_init();
     buttons_leds_init(&erase_bonds);
     ble_stack_init();

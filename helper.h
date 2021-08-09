@@ -14,6 +14,6 @@
 
 void timers_init(void);
 void log_init(void);
-
+void lfclk_config(void);
 
 #endif
