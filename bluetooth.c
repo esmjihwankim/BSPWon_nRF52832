@@ -624,7 +624,7 @@ void saadc_init(void)
         NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN5);
     channel_1_config.gain = NRF_SAADC_GAIN1_4;
     channel_1_config.reference = NRF_SAADC_REFERENCE_VDD4;
-	
+
     nrf_saadc_channel_config_t channel_2_config =
         NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN6);
     channel_2_config.gain = NRF_SAADC_GAIN1_4;

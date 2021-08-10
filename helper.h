@@ -10,6 +10,8 @@
 #include "ble_advertising.h"
 #include "bsp_btn_ble.h"
 
+#include "gpio_control.h"
+
 #define DEAD_BEEF                       0xDEADBEEF                                  /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
 void timers_init(void);
