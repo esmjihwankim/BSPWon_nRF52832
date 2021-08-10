@@ -1,7 +1,7 @@
 # **BSPWon_nRF52**
-![GitHub Logo](sensor.jpg = 250x)
+<img src="sensor.jpg" width="48">
 
-## Project Overview
+## *Project Overview*
 --------------------------------------------
 > #### The objective of this project is to enable wireless communication among peripheral devices to receive and transmit data and commands. The NRF board provides a developer  environment where the user can manually configure low level application procedures, giving the creator freedom to manage the incoming and outgoing data. With this functional flexibility, the microprocessor can be programmed to transmit data at configured rates and also provide interrupts to execute commands at certain instances. Some key functions that will be implemented include:
 >  * Wirelessly transmit data
