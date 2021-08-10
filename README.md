@@ -23,8 +23,8 @@
 --------------------------------------------
 > #### The BLE chip will be programmed to trigger certain actions based on the received string data of the peripheral device. Currently, the chip can execute two key commands:
 
-Single LED ON/OFF | Cascade Multiple LED's
------------------ | ----------------------
-LEDON: String data "LEDON", from the peripheral device will have the chip trigger the registered LED pin as high to turn on the LED. | LEDCASCADE: String data "LEDCASCADE", from peripheral dvice will have the chip trigger multiple pins consecutively based on the timer frequency. 
+> Single LED ON/OFF | Cascade Multiple LED's
+> ----------------- | ----------------------
+> LEDON: String data "LEDON", from the peripheral device will have the chip trigger the registered LED pin as high to turn on the LED. | LEDCASCADE: String data "LEDCASCADE", > > from peripheral dvice will have the chip trigger multiple pins consecutively based on the timer frequency. 
 
 --------------------------------------------
