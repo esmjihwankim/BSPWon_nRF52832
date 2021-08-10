@@ -3,9 +3,9 @@
 ## Project Overview
 --------------------------------------------
 > #### The objective of this project is to enable wireless communication among peripheral devices to receive and transmit data and commands. The NRF board provides a developer  environment where the user can manually configure low level application procedures, giving the creator freedom to manage the incoming and outgoing data. With this functional flexibility, the microprocessor can be programmed to transmit data at configured rates and also provide interrupts to excecute commands at certain instances. Some key functions that will be implemented include:
-  * Wirelessly transmit data
-  * Receive transmitted data from peripheral
-  * Execute commands based on received data
+>  * Wirelessly transmit data
+>  * Receive transmitted data from peripheral
+>  * Execute commands based on received data
 ----------------------------------------------
 
 ## Data Transmission
