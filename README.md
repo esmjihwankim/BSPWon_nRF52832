@@ -1,6 +1,6 @@
 # **BSPWon_nRF52**
 <img src="sensor.jpg" width="550" height = "350">
-#####  *BLE chip integrated into circuit along with power source*
+#####  *BLE chip integrated into circuit along with power source
 
 ## *Project Overview*
 --------------------------------------------
