@@ -1,5 +1,5 @@
 # **BSPWon_nRF52**
-<img src="sensor.jpg" width="150">
+<img src="sensor.jpg" width="250" height = "250">
 
 ## *Project Overview*
 --------------------------------------------
