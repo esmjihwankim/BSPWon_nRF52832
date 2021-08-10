@@ -9,17 +9,17 @@
 >  * Execute commands based on received data
 ----------------------------------------------
 
-## Data Transmission
+## *Data Transmission*
 ------------------------------------------
 > #### The BLE microprocessor will be integrated into a bio-sensor circuit which will continuously return data based on its current environment. The processor will receive the sensor's data and wirelessly transmit them to a central device, where a UI will be implemented to display the receieved raw data. 
 ----------------------------------------
 
-## Recieve Data from Peripheral 
+## *Recieve Data from Peripheral* 
 --------------------------------------------
 > #### Enabling bi-directional communication is paramount in effective communication. Along with transmitting data, the BLE chip must be able to receieve data sent by the peripheral device. The received data will automatically be parsed to a string data format. The received string data can trigger certain commands that are programmed into the chip.
 --------------------------------------------
 
-## Command Execution 
+## *Command Execution* 
 --------------------------------------------
 > #### The BLE chip will be programmed to trigger certain actions based on the received string data of the peripheral device. Currently, the chip can execute two key commands:
 > Single LED ON/OFF | Cascade Multiple LED's
