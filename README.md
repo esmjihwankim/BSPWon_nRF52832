@@ -1,5 +1,5 @@
 # **BSPWon_nRF52**
-
+![GitHub Logo](sensor.jpg)
 
 ## Project Overview
 --------------------------------------------
