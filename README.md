@@ -43,15 +43,16 @@
 > P0.21 :: RESET Button
 
 > #### Analog Input Pins
-> P0.28 :: CH:W
-> P0.29 :: CH:X
-> P0.30 :: CH:Y
-> P0.31 :: CH:Z in BSPWon iOS Application 
+P0.28 :: CH:W
+P0.29 :: CH:X
+P0.30 :: CH:Y
+P0.31 :: CH:Z in BSPWon iOS Application 
+
 > #### Cascade Action Pins 
-> P??? (To be added) 
-> P0.22 
-> P0.23
-> P0.24
-> P0.25
+P??? (To be added) 
+P0.22 
+P0.23
+P0.24
+P0.25
 
  
