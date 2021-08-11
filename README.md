@@ -28,3 +28,30 @@
 > LEDON: String data "LEDON", from the peripheral device will have the chip trigger the registered LED pin as high to turn on the LED. | LEDCASCADE: String data "LEDCASCADE", > > from peripheral device will have the chip trigger multiple pins consecutively based on the timer frequency. 
 > LEDOFF: String data "LEDOFF", from the peripheral device will have the chip trigger the registered LED pin as low to turn off the LED. | LEDCASCADEOFF: String data "LEDCASCADEOFF", from peripheral device will have the chip set all of the registered pins to LOW. 
 --------------------------------------------
+
+## * Pin Usage*
+--------------------------------------------
+> #### Already Used Pins (IN-BOARD)
+> P0.13 :: Button1 
+> P0.14 :: Button2
+> P0.15 :: Button3
+> P0.16 :: Button4
+> P0.17 :: LED1
+> P0.18 :: LED2
+> P0.19 :: LED3
+> P0.20 :: LED4
+> P0.21 :: RESET Button
+
+> #### Analog Input Pins
+> P0.28 :: CH:W
+> P0.29 :: CH:X
+> P0.30 :: CH:Y
+> P0.31 :: CH:Z in BSPWon iOS Application 
+> #### Cascade Action Pins 
+> P??? (To be added) 
+> P0.22 
+> P0.23
+> P0.24
+> P0.25
+
+ 

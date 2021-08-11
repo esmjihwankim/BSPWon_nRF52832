@@ -60,7 +60,7 @@
 #define UART_RX_BUF_SIZE                256                                         /**< UART RX buffer size. */
 
 #define SAADC_SAMPLES_IN_BUFFER         4
-#define SAADC_SAMPLE_RATE               500                                         /**< SAADC sample rate in ms. */               
+#define SAADC_SAMPLE_RATE               50                                         /**< SAADC sample rate in ms. */               
 
 BLE_ADVERTISING_DEF(m_advertising);                                                 /**< Advertising module instance. */
 
