@@ -11,7 +11,7 @@ int main(void)
 
     // Initialize.
     gpio_init();
-    temp_init();
+    cpu_temp_init();
     uart_init();
     log_init();
     lfclk_config();

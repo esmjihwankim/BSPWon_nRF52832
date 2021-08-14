@@ -4,21 +4,29 @@ int32_t volatile temp;
 
 /*@brief Sets register to enable temperature measurement
 */
-void temp_init()
+void cpu_temp_init()
 {
     nrf_temp_init(); 
+    
+    NRF_TEMP->INTENSET |= TEMP_INTENSET_DATARDY_Enabled; 
+    NVIC_SetPriority(TEMP_IRQn, APP_IRQ_PRIORITY_LOW);
+    NVIC_EnableIRQ(TEMP_IRQn); 
+    
 }
+
 
 /*@brief Returns temperature value 
 */
-int get_temperature()
+void cpu_temp_start_task()
 {
-    // Start Temperature Measurement 
     NRF_TEMP->TASKS_START = 1;
-    temp = (nrf_temp_read() / 4);
-    printf("Current Temperature: %d", (int)temp); 
-    NRF_TEMP->TASKS_STOP = 1;
-
-    return (int) temp; 
 }
 
+
+void TEMP_IRQHandler()
+{
+    NRF_TEMP->EVENTS_DATARDY = 0;
+    temp = (nrf_temp_read() / 4); 
+    NRF_TEMP->TASKS_STOP = 1;
+    //printf("TEMP:::%d", temp);
+}

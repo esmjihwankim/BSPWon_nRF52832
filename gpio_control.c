@@ -115,7 +115,6 @@ void led_cascade_on(void)
       app_timer_start(m_app_timer_id, LED_INTERVAL, NULL);  // initialize the timer
     }
 
-    
 }
 
 

@@ -588,7 +588,7 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         }
         */
 
-         // Send data over BLE via NUS service. Create string from samples and send string with correct length.
+        // Send data over BLE via NUS service. Create string from samples and send string with correct length.
         uint8_t nus_string[50];
         bytes_to_send = sprintf(nus_string, 
                                 "CH0: %d\nCH1: %d\nCH2: %d\nCH3: %d\n",
