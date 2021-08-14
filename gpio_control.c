@@ -88,8 +88,8 @@ static void app_timer_handler(void * p_context)
 
 void create_timer(void)
 {
-  ret_code_t err_code;
-  err_code = app_timer_create(&m_app_timer_id, APP_TIMER_MODE_REPEATED, app_timer_handler);
+    ret_code_t err_code;
+    err_code = app_timer_create(&m_app_timer_id, APP_TIMER_MODE_REPEATED, app_timer_handler);
     APP_ERROR_CHECK(err_code);    
 }
 

@@ -4,7 +4,6 @@
 
 /* custom headers */
 #include "bluetooth.h"
-#include "helper.h"
 #include "gpio_control.h"
 
 

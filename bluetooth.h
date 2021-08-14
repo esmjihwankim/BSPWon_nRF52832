@@ -23,7 +23,6 @@
 #include "nrf_drv_saadc.h"
 #include "nrf_drv_ppi.h"
 #include "nrf_drv_timer.h"
-
 #include "nrf_log.h"
 
 #if defined (UART_PRESENT)
@@ -34,6 +33,7 @@
 #endif
 
 #include "gpio_control.h"
+#include "temperature.h"
 
 /* Define */
 #define APP_BLE_CONN_CFG_TAG            1                                           /**< A tag identifying the SoftDevice BLE configuration. */
