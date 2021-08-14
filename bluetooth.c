@@ -588,6 +588,8 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         }
         */
 
+        cpu_get_temperature();
+
         // Send data over BLE via NUS service. Create string from samples and send string with correct length.
         uint8_t nus_string[50];
         bytes_to_send = sprintf(nus_string, 
