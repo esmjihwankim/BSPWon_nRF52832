@@ -22,11 +22,11 @@
 
 ## *Command Execution* 
 --------------------------------------------
-> #### The BLE chip will be programmed to trigger certain actions based on the received string data of the peripheral device. Currently, the chip can execute two key commands:
-> Single LED ON/OFF | Cascade Multiple LED's
-> ----------------- | ----------------------
-> LEDON: String data "LEDON", from the peripheral device will have the chip trigger the registered LED pin as high to turn on the LED. | LEDCASCADE: String data "LEDCASCADE", > > from peripheral device will have the chip trigger multiple pins consecutively based on the timer frequency. 
-> LEDOFF: String data "LEDOFF", from the peripheral device will have the chip trigger the registered LED pin as low to turn off the LED. | LEDCASCADEOFF: String data "LEDCASCADEOFF", from peripheral device will have the chip set all of the registered pins to LOW. 
+> #### The BLE chip will be programmed to trigger certain actions based on the received string data of the peripheral device. Currently, the chip can execute three key commands:
+> Single LED ON/OFF | Cascade Multiple LED's | Toggle Control Pins
+> ----------------- | -----------------------|---------------------
+> LEDON: String data "LEDON", from the peripheral device will have the chip trigger the registered LED pin as high to turn on the LED. | LEDCASCADE: String data "LEDCASCADE", > > from peripheral device will have the chip trigger multiple pins consecutively based on the timer frequency. | Control_Pin_On: Similar to the LED's, the configured control pins are set to the HIGH state to receive data from devices that may soon be added in the future. 
+> LEDOFF: String data "LEDOFF", from the peripheral device will have the chip trigger the registered LED pin as low to turn off the LED. | LEDCASCADEOFF: String data "LEDCASCADEOFF", from peripheral device will have the chip set all of the registered pins to LOW. | Control_Pin_Off: The control pin is set back to its LOW state, disabling the device. 
 --------------------------------------------
 
 ## * Pin Usage*
@@ -52,15 +52,12 @@ P0.31 :: CH:Z in BSPWon iOS Application
 P0.12
 
 > #### Cascade Action Pins 
-P0.12
+P0.12<br/>
 P0.22  
 P0.23  
 P0.24  
 P0.25  
 
 > #### Control Pins
-P0.06 :: Control Pin 1
+P0.06 :: Control Pin 1<br/>
 P0.07 :: Control Pin 2
-
-
- 
