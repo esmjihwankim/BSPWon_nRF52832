@@ -5,14 +5,23 @@ static uint32_t i;
 
 void gpio_init(void)
 {   
-    // Initialize the pin
+
+    // Initialize Control Pins
+    nrf_gpio_cfg_output(CONTROL_PIN_1);
+    nrf_gpio_cfg_output(CONTROL_PIN_2);
+
+    // Initialize LED Pins
     nrf_gpio_cfg_output(LED_PIN_1);
     nrf_gpio_cfg_output(LED_PIN_2); 
     nrf_gpio_cfg_output(LED_PIN_3); 
     nrf_gpio_cfg_output(LED_PIN_4); 
     nrf_gpio_cfg_output(LED_PIN_5); 
 
-    // Turn off the LED
+    // Turn off Control Pins
+    nrf_gpio_pin_clear(CONTROL_PIN_1);
+    nrf_gpio_pin_clear(CONTROL_PIN_2);
+
+    // Turn off LEDs
     nrf_gpio_pin_clear(LED_PIN_1);
     nrf_gpio_pin_clear(LED_PIN_2); 
     nrf_gpio_pin_clear(LED_PIN_3); 
@@ -54,36 +63,44 @@ void control_table(ble_nus_evt_t * p_evt)
             while (app_uart_put('\n') == NRF_ERROR_BUSY);
         }
         
-
         printf("\r\nCENTRAL RECEIVED MESSAGE:::%s\r\n", buffer_rx);
 
         // operate LED
-        if(strcmp(buffer_rx, "LEDON") == 0) led_on(); 
-        else if(strcmp(buffer_rx, "LEDOFF") == 0) led_off(); 
-        else if(strcmp(buffer_rx, "LEDCASCADEON")==0) led_cascade_on();
-        else if(strcmp(buffer_rx, "LEDCASCADEOFF")==0) led_cascade_off();
+        if(strcmp(buffer_rx, "LEDON") == 0)             led_on(); 
+        else if(strcmp(buffer_rx, "LEDOFF") == 0)       led_off(); 
+        else if(strcmp(buffer_rx, "LEDCASCADEON")==0)   led_cascade_on();
+        else if(strcmp(buffer_rx, "LEDCASCADEOFF")==0)  led_cascade_off();
+        else if(strcmp(buffer_rx, "CONTROLPIN1ON")==0)  control_pin1_on();
+        else if(strcmp(buffer_rx, "CONTROLPIN1OFF")==0) control_pin1_off(); 
+        else if(strcmp(buffer_rx, "CONTROLPIN2ON")==0)  control_pin2_on();
+        else if(strcmp(buffer_rx, "CONTROLPIN2OFF")==0) control_pin2_off();
     }
 }
 
 static void app_timer_handler(void * p_context)
 {
-    static uint32_t  x, val;
-    bool status1, status2, status3, status4;
-    val = (i++) % 5;
-    x = val + 22;
-    status1 = nrf_gpio_pin_out_read(LED_PIN_2);
-    status2 = nrf_gpio_pin_out_read(LED_PIN_3);
-    status3 = nrf_gpio_pin_out_read(LED_PIN_4);
-    status4 = nrf_gpio_pin_out_read(LED_PIN_5);
-    nrf_gpio_pin_toggle(x);
-    if ((status1 == 1) && (status2 == 1) && (status3 == 1) && (status4 == 1))
-    {
-      // Turn off all LEDs
-      nrf_gpio_pin_clear(LED_PIN_2); 
-      nrf_gpio_pin_clear(LED_PIN_3); 
-      nrf_gpio_pin_clear(LED_PIN_4); 
-      nrf_gpio_pin_clear(LED_PIN_5); 
-    }
+      static bool status1, status2, status3, status4, status5;
+
+      status1 = nrf_gpio_pin_out_read(LED_PIN_1);
+      status2 = nrf_gpio_pin_out_read(LED_PIN_2);
+      status3 = nrf_gpio_pin_out_read(LED_PIN_3);
+      status4 = nrf_gpio_pin_out_read(LED_PIN_4);
+      status5 = nrf_gpio_pin_out_read(LED_PIN_5);
+
+      if (status1 && status2 && status3 && status4 && status5)
+      {
+          // Turn off all LEDs
+          nrf_gpio_pin_clear(LED_PIN_1);
+          nrf_gpio_pin_clear(LED_PIN_2); 
+          nrf_gpio_pin_clear(LED_PIN_3); 
+          nrf_gpio_pin_clear(LED_PIN_4); 
+          nrf_gpio_pin_clear(LED_PIN_5); 
+      }
+      else if(!status1) nrf_gpio_pin_set(LED_PIN_1);
+      else if(!status2) nrf_gpio_pin_set(LED_PIN_2);
+      else if(!status3) nrf_gpio_pin_set(LED_PIN_3);
+      else if(!status4) nrf_gpio_pin_set(LED_PIN_4);
+      else if(!status5) nrf_gpio_pin_set(LED_PIN_5);
 }
 
 void create_timer(void)
@@ -114,7 +131,6 @@ void led_cascade_on(void)
       create_timer();
       app_timer_start(m_app_timer_id, LED_INTERVAL, NULL);  // initialize the timer
     }
-
 }
 
 
@@ -125,10 +141,33 @@ void led_cascade_off(void)
     if (app_timer_cnt_get() != 0)
     {
         app_timer_stop(m_app_timer_id);
+        nrf_gpio_pin_clear(LED_PIN_1);
         nrf_gpio_pin_clear(LED_PIN_2); 
         nrf_gpio_pin_clear(LED_PIN_3);
         nrf_gpio_pin_clear(LED_PIN_4);
         nrf_gpio_pin_clear(LED_PIN_5); 
         i = 0;
     }
+}
+
+
+/* Turn on and off Control Pins */
+void control_pin1_on(void)
+{
+    nrf_gpio_pin_set(CONTROL_PIN_1);
+}
+
+void control_pin1_off(void)
+{
+    nrf_gpio_pin_clear(CONTROL_PIN_1);
+}
+
+void control_pin2_on(void)
+{
+    nrf_gpio_pin_set(CONTROL_PIN_2);
+}
+
+void control_pin2_off(void)
+{
+    nrf_gpio_pin_clear(CONTROL_PIN_2);
 }

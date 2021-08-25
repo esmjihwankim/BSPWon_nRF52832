@@ -15,16 +15,16 @@ GPIOs for Toggling Event : PIN_1, PIN_2
 GPIOs for Cascade Action : LED_PIN_1,LED_PIN_2,LED_PIN_3,LED_PIN_4,LED_PIN_5
 */
 
-#define TOGGLE_PIN_1 12
-#define TOGGLE_PIN_2 13
+#define CONTROL_PIN_1 6
+#define CONTROL_PIN_2 7
 
 #define LED_PIN_1 12
 #define LED_PIN_2 22
 #define LED_PIN_3 23 
 #define LED_PIN_4 24 
 #define LED_PIN_5 25 
-#define LED_INTERVAL APP_TIMER_TICKS(100)
 
+#define LED_INTERVAL APP_TIMER_TICKS(100)
 
 APP_TIMER_DEF(m_app_timer_id);
 void gpio_init(void);
@@ -34,4 +34,10 @@ void led_off(void);
 void led_cascade_on(void);
 void led_cascade_off(void);
 void led_toggle(void);
+
+void control_pin1_on(void);
+void control_pin1_off(void);
+void control_pin2_on(void);
+void control_pin2_off(void);
+
 #endif
