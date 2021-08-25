@@ -5,8 +5,8 @@
 ## *Project Overview*
 --------------------------------------------
 > #### The objective of this project is to enable wireless communication among peripheral devices to receive and transmit data and commands. The NRF board provides a developer  environment where the user can manually configure low level application procedures, giving the creator freedom to manage the incoming and outgoing data. With this functional flexibility, the microprocessor can be programmed to transmit data at configured rates and also provide interrupts to execute commands at certain instances. Some key functions that will be implemented include:
->  * Wirelessly transmit data
->  * Receive transmitted data from peripheral
+>  * Wirelessly transmit custom-made sensor data
+>  * Receive transmitted data from peripheral (The device is supposed to work as both central & peripheral and uses proprietary BLE service)
 >  * Execute commands based on received data
 ----------------------------------------------
 
@@ -48,9 +48,6 @@ P0.29 :: CH:X
 P0.30 :: CH:Y  
 P0.31 :: CH:Z in BSPWon iOS Application
 
-> #### Single LED Toggle Pin
-P0.12
-
 > #### Cascade Action Pins 
 P0.12<br/>
 P0.22  
@@ -59,5 +56,5 @@ P0.24
 P0.25  
 
 > #### Control Pins
-P0.06 :: Control Pin 1<br/>
-P0.07 :: Control Pin 2
+P0.03 :: Control Pin 1<br/>
+P0.04 :: Control Pin 2

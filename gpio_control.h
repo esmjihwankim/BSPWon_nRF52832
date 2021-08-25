@@ -15,8 +15,8 @@ GPIOs for Toggling Event : PIN_1, PIN_2
 GPIOs for Cascade Action : LED_PIN_1,LED_PIN_2,LED_PIN_3,LED_PIN_4,LED_PIN_5
 */
 
-#define CONTROL_PIN_1 6
-#define CONTROL_PIN_2 7
+#define CONTROL_PIN_1 3
+#define CONTROL_PIN_2 4
 
 #define LED_PIN_1 12
 #define LED_PIN_2 22
