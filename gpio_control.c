@@ -9,6 +9,8 @@ void gpio_init(void)
     // Initialize Control Pins
     nrf_gpio_cfg_output(CONTROL_PIN_1);
     nrf_gpio_cfg_output(CONTROL_PIN_2);
+    nrf_gpio_cfg_output(CONTROL_PIN_3);
+    nrf_gpio_cfg_output(CONTROL_PIN_4);
 
     // Initialize LED Pins
     nrf_gpio_cfg_output(LED_PIN_1);
@@ -20,6 +22,8 @@ void gpio_init(void)
     // Turn off Control Pins
     nrf_gpio_pin_clear(CONTROL_PIN_1);
     nrf_gpio_pin_clear(CONTROL_PIN_2);
+    nrf_gpio_pin_clear(CONTROL_PIN_3);
+    nrf_gpio_pin_clear(CONTROL_PIN_4);
 
     // Turn off LEDs
     nrf_gpio_pin_clear(LED_PIN_1);
@@ -31,6 +35,30 @@ void gpio_init(void)
     uint32_t err_code = app_timer_start(m_app_timer_id, LED_INTERVAL, NULL); // initialize the timer
 }
 
+/* Turn on and off Control Pins */
+void control_pin1_onoff(int onoff)
+{
+    if(onoff == 1) nrf_gpio_pin_set(CONTROL_PIN_1);
+    else nrf_gpio_pin_clear(CONTROL_PIN_1);
+}
+
+void control_pin2_onoff(int onoff)
+{
+    if(onoff == 1) nrf_gpio_pin_set(CONTROL_PIN_2);
+    else nrf_gpio_pin_clear(CONTROL_PIN_2);
+}
+
+void control_pin3_onoff(int onoff)
+{
+    if(onoff == 1) nrf_gpio_pin_set(CONTROL_PIN_3);
+    else nrf_gpio_pin_clear(CONTROL_PIN_3);
+}
+
+void control_pin4_onoff(int onoff)
+{
+    if(onoff == 1) nrf_gpio_pin_set(CONTROL_PIN_4);
+    else nrf_gpio_pin_clear(CONTROL_PIN_4);
+}
 
 void control_table(ble_nus_evt_t * p_evt)
 {
@@ -70,10 +98,14 @@ void control_table(ble_nus_evt_t * p_evt)
         else if(strcmp(buffer_rx, "LEDOFF") == 0)       led_off(); 
         else if(strcmp(buffer_rx, "LEDCASCADEON")==0)   led_cascade_on();
         else if(strcmp(buffer_rx, "LEDCASCADEOFF")==0)  led_cascade_off();
-        else if(strcmp(buffer_rx, "CONTROLPIN1ON")==0)  control_pin1_on();
-        else if(strcmp(buffer_rx, "CONTROLPIN1OFF")==0) control_pin1_off(); 
-        else if(strcmp(buffer_rx, "CONTROLPIN2ON")==0)  control_pin2_on();
-        else if(strcmp(buffer_rx, "CONTROLPIN2OFF")==0) control_pin2_off();
+        else if(strcmp(buffer_rx, "CONTROLPIN1ON")==0)  control_pin1_onoff(1);
+        else if(strcmp(buffer_rx, "CONTROLPIN1OFF")==0) control_pin1_onoff(0); 
+        else if(strcmp(buffer_rx, "CONTROLPIN2ON")==0)  control_pin2_onoff(1);
+        else if(strcmp(buffer_rx, "CONTROLPIN2OFF")==0) control_pin2_onoff(0);
+        else if(strcmp(buffer_rx, "CONTROLPIN3ON")==0)  control_pin3_onoff(1);
+        else if(strcmp(buffer_rx, "CONTROLPIN3OFF")==0) control_pin3_onoff(0);
+        else if(strcmp(buffer_rx, "CONTROLPIN4ON")==0)  control_pin4_onoff(1);
+        else if(strcmp(buffer_rx, "CONTROLPIN4OFF")==0) control_pin4_onoff(0);
     }
 }
 
@@ -151,23 +183,3 @@ void led_cascade_off(void)
 }
 
 
-/* Turn on and off Control Pins */
-void control_pin1_on(void)
-{
-    nrf_gpio_pin_set(CONTROL_PIN_1);
-}
-
-void control_pin1_off(void)
-{
-    nrf_gpio_pin_clear(CONTROL_PIN_1);
-}
-
-void control_pin2_on(void)
-{
-    nrf_gpio_pin_set(CONTROL_PIN_2);
-}
-
-void control_pin2_off(void)
-{
-    nrf_gpio_pin_clear(CONTROL_PIN_2);
-}
