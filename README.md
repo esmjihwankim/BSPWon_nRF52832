@@ -1,4 +1,4 @@
-#**BSPWon_nRF52**
+# **BSPWon_nRF52**
 Bio Sensor Platform designed to operate with BSPWon iOS/Android </br>
 @Won Research Group, SKKU </br>
 <img src="sensor.PNG" width="550" height = "350">
