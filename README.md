@@ -1,5 +1,5 @@
-# **BSPWon_nRF52 **
-Bio Sensor Platform operated in unison with BSPWon iOS / Android </br>
+#**BSPWon_nRF52**
+Bio Sensor Platform designed to operate with BSPWon iOS/Android </br>
 @Won Research Group, SKKU </br>
 <img src="sensor.PNG" width="550" height = "350">
 #####*(BLE chip integrated into circuit along with power source and an accelerometer)* </br>
