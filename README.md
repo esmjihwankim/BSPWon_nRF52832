@@ -1,6 +1,9 @@
-# **BSPWon_nRF52**
+# **BSPWon_nRF52 **
+# **Bio Sensor Platform operated in unison with BSPWon iOS / Android**
+# **@Won Research Group, SKKU** 
 <img src="sensor.PNG" width="550" height = "350">
 #####*(BLE chip integrated into circuit along with power source and an accelerometer)* </br>
+Developed by Jihwan Kim, Sang Wook Park, Sang Hoon Lee</br> 
 Photo taken by Hee Kyu Lee, Won Research Group 
 
 ## *Project Overview*
