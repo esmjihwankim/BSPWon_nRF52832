@@ -591,14 +591,15 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         // Send data over BLE via NUS service. Create string from samples and send string with correct length.
         uint8_t nus_string[50];
         bytes_to_send = sprintf(nus_string, 
-                                " %d\n %d\n %d\n %d\n %d\n %d\n",
+                                " %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r",
                                 p_event->data.done.p_buffer[0],
                                 p_event->data.done.p_buffer[1],
                                 p_event->data.done.p_buffer[2],
                                 p_event->data.done.p_buffer[3],
                                 p_event->data.done.p_buffer[4],
                                 p_event->data.done.p_buffer[5]);
-
+                               
+        printf(nus_string);
         err_code = ble_nus_data_send(&m_nus, nus_string, &bytes_to_send, m_conn_handle);
         if ((err_code != NRF_ERROR_INVALID_STATE) && (err_code != NRF_ERROR_NOT_FOUND))
         {
@@ -620,12 +621,12 @@ void saadc_init(void)
     
     // ADC Channel Configuration 
     nrf_saadc_channel_config_t channel_0_config = 
-        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN0); 
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN1); 
     channel_0_config.gain = NRF_SAADC_GAIN1_4;
     channel_0_config.reference = NRF_SAADC_REFERENCE_VDD4;
     
     nrf_saadc_channel_config_t channel_1_config = 
-        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN1); 
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN2); 
     channel_1_config.gain = NRF_SAADC_GAIN1_4;
     channel_1_config.reference = NRF_SAADC_REFERENCE_VDD4;
     
