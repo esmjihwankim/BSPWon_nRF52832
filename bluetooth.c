@@ -560,7 +560,6 @@ void saadc_sampling_event_enable(void)
     APP_ERROR_CHECK(err_code);
 }
 
-
 void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
 {
     if (p_event->type == NRF_DRV_SAADC_EVT_DONE)
@@ -574,9 +573,8 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         err_code = nrf_drv_saadc_buffer_convert(p_event->data.done.p_buffer, SAADC_SAMPLES_IN_BUFFER);
         APP_ERROR_CHECK(err_code);
 						
-        // print samples on hardware UART and parse data for BLE transmission
-
         /*
+        // print samples on hardware UART and parse data for BLE transmission
         printf("ADC event number: %d\r\n",(int)m_adc_evt_counter);
         for (int i = 0; i < SAADC_SAMPLES_IN_BUFFER; i++)
         {
@@ -588,16 +586,18 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         }
         */
 
-        cpu_get_temperature();
+        //cpu_get_temperature();
 
         // Send data over BLE via NUS service. Create string from samples and send string with correct length.
         uint8_t nus_string[50];
         bytes_to_send = sprintf(nus_string, 
-                                "CH0: %d\nCH1: %d\nCH2: %d\nCH3: %d\n",
+                                " %d\n %d\n %d\n %d\n %d\n %d\n",
                                 p_event->data.done.p_buffer[0],
                                 p_event->data.done.p_buffer[1],
                                 p_event->data.done.p_buffer[2],
-                                p_event->data.done.p_buffer[3]);
+                                p_event->data.done.p_buffer[3],
+                                p_event->data.done.p_buffer[4],
+                                p_event->data.done.p_buffer[5]);
 
         err_code = ble_nus_data_send(&m_nus, nus_string, &bytes_to_send, m_conn_handle);
         if ((err_code != NRF_ERROR_INVALID_STATE) && (err_code != NRF_ERROR_NOT_FOUND))
@@ -610,6 +610,7 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
 }
 
 
+
 void saadc_init(void)
 {
     ret_code_t err_code;
@@ -617,8 +618,16 @@ void saadc_init(void)
     nrf_drv_saadc_config_t saadc_config = NRF_DRV_SAADC_DEFAULT_CONFIG;
     saadc_config.resolution = NRF_SAADC_RESOLUTION_12BIT;
     
-    // TODO: Add ADC Channel : CHANNEL0 AND CHANNEL1
-    // Look into Buffer conversion? 
+    // ADC Channel Configuration 
+    nrf_saadc_channel_config_t channel_0_config = 
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN0); 
+    channel_0_config.gain = NRF_SAADC_GAIN1_4;
+    channel_0_config.reference = NRF_SAADC_REFERENCE_VDD4;
+    
+    nrf_saadc_channel_config_t channel_1_config = 
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN1); 
+    channel_1_config.gain = NRF_SAADC_GAIN1_4;
+    channel_1_config.reference = NRF_SAADC_REFERENCE_VDD4;
     
     nrf_saadc_channel_config_t channel_2_config =
         NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN4);
@@ -639,17 +648,21 @@ void saadc_init(void)
         NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN7);
     channel_5_config.gain = NRF_SAADC_GAIN1_4;
     channel_5_config.reference = NRF_SAADC_REFERENCE_VDD4;				
-	
+	    
     err_code = nrf_drv_saadc_init(&saadc_config, saadc_callback);
     APP_ERROR_CHECK(err_code);
 
-    err_code = nrf_drv_saadc_channel_init(0, &channel_2_config);
+    err_code = nrf_drv_saadc_channel_init(0, &channel_0_config);
     APP_ERROR_CHECK(err_code);
-    err_code = nrf_drv_saadc_channel_init(1, &channel_3_config);
+    err_code = nrf_drv_saadc_channel_init(1, &channel_1_config);
     APP_ERROR_CHECK(err_code);
-    err_code = nrf_drv_saadc_channel_init(2, &channel_4_config);
+    err_code = nrf_drv_saadc_channel_init(2, &channel_2_config);
     APP_ERROR_CHECK(err_code);
-    err_code = nrf_drv_saadc_channel_init(3, &channel_5_config);
+    err_code = nrf_drv_saadc_channel_init(3, &channel_3_config);
+    APP_ERROR_CHECK(err_code);
+    err_code = nrf_drv_saadc_channel_init(4, &channel_4_config);
+    APP_ERROR_CHECK(err_code);
+    err_code = nrf_drv_saadc_channel_init(5, &channel_5_config);
     APP_ERROR_CHECK(err_code);	
 
     err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[0],SAADC_SAMPLES_IN_BUFFER);
@@ -657,3 +670,4 @@ void saadc_init(void)
     err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[1],SAADC_SAMPLES_IN_BUFFER);
     APP_ERROR_CHECK(err_code);
 }
+

@@ -38,7 +38,7 @@
 /* Define */
 #define APP_BLE_CONN_CFG_TAG            1                                           /**< A tag identifying the SoftDevice BLE configuration. */
 
-#define DEVICE_NAME                     "WonResearch_nRF"                           /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                     "WonResearch_nRF_JihwanKim"                           /**< Name of device. Will be included in the advertising data. */
 #define NUS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
 
 #define APP_BLE_OBSERVER_PRIO           3                                           /**< Application's BLE observer priority. You shouldn't need to modify this value. */
@@ -59,7 +59,7 @@
 #define UART_TX_BUF_SIZE                256                                         /**< UART TX buffer size. */
 #define UART_RX_BUF_SIZE                256                                         /**< UART RX buffer size. */
 
-#define SAADC_SAMPLES_IN_BUFFER         4
+#define SAADC_SAMPLES_IN_BUFFER         6
 #define SAADC_SAMPLE_RATE               50                                         /**< SAADC sample rate in ms. */               
 
 BLE_ADVERTISING_DEF(m_advertising);                                                 /**< Advertising module instance. */

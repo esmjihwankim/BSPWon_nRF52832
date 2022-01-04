@@ -3,7 +3,7 @@ Bio Sensor Platform designed to operate with BSPWon iOS/Android </br>
 @Won Research Group, SKKU </br>
 <img src="sensor.PNG" width="550" height = "350">
 #####*(BLE chip integrated into circuit along with power source and an accelerometer)* </br>
-Developed by Jihwan Kim, Sang Wook Park, Sang Hoon Lee</br> 
+Developed by Jihwan Kim, Sang Uk Park, Sang Hoon Lee</br> 
 Photo taken by Hee Kyu Lee, Won Research Group 
 
 ## *Project Overview*
