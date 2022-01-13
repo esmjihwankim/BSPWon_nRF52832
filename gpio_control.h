@@ -20,13 +20,13 @@ GPIOs for Cascade Action : LED_PIN_1,LED_PIN_2,LED_PIN_3,LED_PIN_4,LED_PIN_5
 #define CONTROL_PIN_3 24
 #define CONTROL_PIN_4 25
 
-#define LED_PIN_1 0
-#define LED_PIN_2 0
-#define LED_PIN_3 0 
-#define LED_PIN_4 0 
-#define LED_PIN_5 0 
+#define CASCADE_PIN_1 0
+#define CASCADE_PIN_2 0
+#define CASCADE_PIN_3 0 
+#define CASCADE_PIN_4 0 
+#define CASCADE_PIN_5 0 
 
-#define LED_INTERVAL APP_TIMER_TICKS(100)
+#define CASCADE_INTERVAL APP_TIMER_TICKS(100)
 
 APP_TIMER_DEF(m_app_timer_id);
 void gpio_init(void);

@@ -505,17 +505,17 @@ static void timer_handler(nrf_timer_event_t event_type, void* p_context)
   {
     
     case NRF_TIMER_EVENT_COMPARE0:
-    status1 = nrf_gpio_pin_out_read(LED_PIN_2);
-    status2 = nrf_gpio_pin_out_read(LED_PIN_3);
-    status3 = nrf_gpio_pin_out_read(LED_PIN_4);
-    status4 = nrf_gpio_pin_out_read(LED_PIN_5);
+    status1 = nrf_gpio_pin_out_read(CASCADE_PIN_2);
+    status2 = nrf_gpio_pin_out_read(CASCADE_PIN_3);
+    status3 = nrf_gpio_pin_out_read(CASCADE_PIN_4);
+    status4 = nrf_gpio_pin_out_read(CASCADE_PIN_5);
     nrf_gpio_pin_toggle(x);
     if ((status1 == 1) && (status2 == 1) && (status3 == 1) && (status4 == 1))
     {
-      nrf_gpio_pin_clear(LED_PIN_2); // Turn off the LED
-      nrf_gpio_pin_clear(LED_PIN_3); // Turn off the LED
-      nrf_gpio_pin_clear(LED_PIN_4); // Turn off the LED
-      nrf_gpio_pin_clear(LED_PIN_5); // Turn off the LED
+      nrf_gpio_pin_clear(CASCADE_PIN_2); // Turn off the LED
+      nrf_gpio_pin_clear(CASCADE_PIN_3); // Turn off the LED
+      nrf_gpio_pin_clear(CASCADE_PIN_4); // Turn off the LED
+      nrf_gpio_pin_clear(CASCADE_PIN_5); // Turn off the LED
     }
     
     break;

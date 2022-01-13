@@ -1,8 +1,6 @@
 #include "gpio_control.h"
 
 
-static uint32_t i;
-
 void gpio_init(void)
 {   
 
@@ -13,11 +11,11 @@ void gpio_init(void)
     nrf_gpio_cfg_output(CONTROL_PIN_4);
 
     // Initialize LED Pins
-    nrf_gpio_cfg_output(LED_PIN_1);
-    nrf_gpio_cfg_output(LED_PIN_2); 
-    nrf_gpio_cfg_output(LED_PIN_3); 
-    nrf_gpio_cfg_output(LED_PIN_4); 
-    nrf_gpio_cfg_output(LED_PIN_5); 
+    nrf_gpio_cfg_output(CASCADE_PIN_1);
+    nrf_gpio_cfg_output(CASCADE_PIN_2); 
+    nrf_gpio_cfg_output(CASCADE_PIN_3); 
+    nrf_gpio_cfg_output(CASCADE_PIN_4); 
+    nrf_gpio_cfg_output(CASCADE_PIN_5); 
 
     // Turn off Control Pins
     nrf_gpio_pin_clear(CONTROL_PIN_1);
@@ -26,13 +24,19 @@ void gpio_init(void)
     nrf_gpio_pin_clear(CONTROL_PIN_4);
 
     // Turn off LEDs
-    nrf_gpio_pin_clear(LED_PIN_1);
-    nrf_gpio_pin_clear(LED_PIN_2); 
-    nrf_gpio_pin_clear(LED_PIN_3); 
-    nrf_gpio_pin_clear(LED_PIN_4); 
-    nrf_gpio_pin_clear(LED_PIN_5); 
+    nrf_gpio_pin_clear(CASCADE_PIN_1);
+    nrf_gpio_pin_clear(CASCADE_PIN_2); 
+    nrf_gpio_pin_clear(CASCADE_PIN_3); 
+    nrf_gpio_pin_clear(CASCADE_PIN_4); 
+    nrf_gpio_pin_clear(CASCADE_PIN_5); 
 
-    uint32_t err_code = app_timer_start(m_app_timer_id, LED_INTERVAL, NULL); // initialize the timer
+    uint32_t err_code = app_timer_start(m_app_timer_id, CASCADE_INTERVAL, NULL); // initialize the timer
+}
+
+//TODO Pulsing Implementation
+void automatic_pulsing_onoff(int onoff)
+{
+    
 }
 
 /* Turn on and off Control Pins */
@@ -94,8 +98,8 @@ void control_table(ble_nus_evt_t * p_evt)
         printf("\r\nCENTRAL RECEIVED MESSAGE:::%s\r\n", buffer_rx);
 
         // operate LED
-        if(strcmp(buffer_rx, "LEDON") == 0)             led_on(); 
-        else if(strcmp(buffer_rx, "LEDOFF") == 0)       led_off(); 
+        if(strcmp(buffer_rx, "AUTOMATICPULSEON")==0) automatic_pulsing_onoff(1); 
+        else if(strcmp(buffer_rx, "AUTOMATICPULSEOFF")==0) automatic_pulsing_onoff(0); 
         else if(strcmp(buffer_rx, "LEDCASCADEON")==0)   led_cascade_on();
         else if(strcmp(buffer_rx, "LEDCASCADEOFF")==0)  led_cascade_off();
         else if(strcmp(buffer_rx, "CONTROLPIN1ON")==0)  control_pin1_onoff(1);
@@ -113,26 +117,26 @@ static void app_timer_handler(void * p_context)
 {
       static bool status1, status2, status3, status4, status5;
 
-      status1 = nrf_gpio_pin_out_read(LED_PIN_1);
-      status2 = nrf_gpio_pin_out_read(LED_PIN_2);
-      status3 = nrf_gpio_pin_out_read(LED_PIN_3);
-      status4 = nrf_gpio_pin_out_read(LED_PIN_4);
-      status5 = nrf_gpio_pin_out_read(LED_PIN_5);
+      status1 = nrf_gpio_pin_out_read(CASCADE_PIN_1);
+      status2 = nrf_gpio_pin_out_read(CASCADE_PIN_2);
+      status3 = nrf_gpio_pin_out_read(CASCADE_PIN_3);
+      status4 = nrf_gpio_pin_out_read(CASCADE_PIN_4);
+      status5 = nrf_gpio_pin_out_read(CASCADE_PIN_5);
 
       if (status1 && status2 && status3 && status4 && status5)
       {
           // Turn off all LEDs
-          nrf_gpio_pin_clear(LED_PIN_1);
-          nrf_gpio_pin_clear(LED_PIN_2); 
-          nrf_gpio_pin_clear(LED_PIN_3); 
-          nrf_gpio_pin_clear(LED_PIN_4); 
-          nrf_gpio_pin_clear(LED_PIN_5); 
+          nrf_gpio_pin_clear(CASCADE_PIN_1);
+          nrf_gpio_pin_clear(CASCADE_PIN_2); 
+          nrf_gpio_pin_clear(CASCADE_PIN_3); 
+          nrf_gpio_pin_clear(CASCADE_PIN_4); 
+          nrf_gpio_pin_clear(CASCADE_PIN_5); 
       }
-      else if(!status1) nrf_gpio_pin_set(LED_PIN_1);
-      else if(!status2) nrf_gpio_pin_set(LED_PIN_2);
-      else if(!status3) nrf_gpio_pin_set(LED_PIN_3);
-      else if(!status4) nrf_gpio_pin_set(LED_PIN_4);
-      else if(!status5) nrf_gpio_pin_set(LED_PIN_5);
+      else if(!status1) nrf_gpio_pin_set(CASCADE_PIN_1);
+      else if(!status2) nrf_gpio_pin_set(CASCADE_PIN_2);
+      else if(!status3) nrf_gpio_pin_set(CASCADE_PIN_3);
+      else if(!status4) nrf_gpio_pin_set(CASCADE_PIN_4);
+      else if(!status5) nrf_gpio_pin_set(CASCADE_PIN_5);
 }
 
 void create_timer(void)
@@ -143,17 +147,6 @@ void create_timer(void)
 }
 
 /* LED Control Functions */
-void led_on(void)
-{
-    printf("FUNC LED ON\r\n");
-    nrf_gpio_pin_set(LED_PIN_1);
-}
-
-void led_off(void)
-{
-    printf("FUNC LED OFF\r\n");
-    nrf_gpio_pin_clear(LED_PIN_1);
-}
 
 void led_cascade_on(void)
 {
@@ -161,7 +154,7 @@ void led_cascade_on(void)
     if (app_timer_cnt_get() == 0)
     {
       create_timer();
-      app_timer_start(m_app_timer_id, LED_INTERVAL, NULL);  // initialize the timer
+      app_timer_start(m_app_timer_id, CASCADE_INTERVAL, NULL);  // initialize the timer
     }
 }
 
@@ -169,15 +162,16 @@ void led_cascade_on(void)
 /* Turn off all LEDs*/
 void led_cascade_off(void)
 {
+    static uint32_t i;
     printf("FUNC LED CASCADE OFF\r\n");
     if (app_timer_cnt_get() != 0)
     {
         app_timer_stop(m_app_timer_id);
-        nrf_gpio_pin_clear(LED_PIN_1);
-        nrf_gpio_pin_clear(LED_PIN_2); 
-        nrf_gpio_pin_clear(LED_PIN_3);
-        nrf_gpio_pin_clear(LED_PIN_4);
-        nrf_gpio_pin_clear(LED_PIN_5); 
+        nrf_gpio_pin_clear(CASCADE_PIN_1);
+        nrf_gpio_pin_clear(CASCADE_PIN_2); 
+        nrf_gpio_pin_clear(CASCADE_PIN_3);
+        nrf_gpio_pin_clear(CASCADE_PIN_4);
+        nrf_gpio_pin_clear(CASCADE_PIN_5); 
         i = 0;
     }
 }
