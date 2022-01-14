@@ -15,16 +15,30 @@ GPIOs for Toggling Event : PIN_1, PIN_2
 GPIOs for Cascade Action : LED_PIN_1,LED_PIN_2,LED_PIN_3,LED_PIN_4,LED_PIN_5
 */
 
-#define CONTROL_PIN_1 22
-#define CONTROL_PIN_2 23
-#define CONTROL_PIN_3 24
-#define CONTROL_PIN_4 25
+#define CONTROL_PIN_1 13
+#define CONTROL_PIN_2 14
+#define CONTROL_PIN_3 15
+#define CONTROL_PIN_4 16
 
 #define CASCADE_PIN_1 0
 #define CASCADE_PIN_2 0
-#define CASCADE_PIN_3 0 
+#define CASCADE_PIN_3 0
 #define CASCADE_PIN_4 0 
 #define CASCADE_PIN_5 0 
+
+#define PULSE_PIN_1 0
+#define PULSE_PIN_2 0
+#define PULSE_PIN_3 0
+#define PULSE_PIN_4 0
+#define PULSE_PIN_5 0
+#define PULSE_PIN_6 0
+#define PULSE_PIN_7 0
+#define PULSE_PIN_8 0
+#define PULSE_PIN_9 0
+#define PULSE_PIN_10 0
+#define PULSE_PIN_11 0
+#define PULSE_PIN_12 0
+
 
 #define CASCADE_INTERVAL APP_TIMER_TICKS(100)
 
