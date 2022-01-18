@@ -5,30 +5,45 @@ void gpio_init(void)
 {   
 
     // Initialize Control Pins
-    nrf_gpio_cfg_output(CONTROL_PIN_1);
-    nrf_gpio_cfg_output(CONTROL_PIN_2);
-    nrf_gpio_cfg_output(CONTROL_PIN_3);
-    nrf_gpio_cfg_output(CONTROL_PIN_4);
+    nrf_gpio_cfg_output(PULSE_PIN_1);
+    nrf_gpio_cfg_output(PULSE_PIN_2);
+    nrf_gpio_cfg_output(PULSE_PIN_3);
+    nrf_gpio_cfg_output(PULSE_PIN_4);
+    nrf_gpio_cfg_output(PULSE_PIN_5);
+    nrf_gpio_cfg_output(PULSE_PIN_6); 
+    nrf_gpio_cfg_output(PULSE_PIN_7); 
+    nrf_gpio_cfg_output(PULSE_PIN_8); 
+    nrf_gpio_cfg_output(PULSE_PIN_9); 
+    nrf_gpio_cfg_output(PULSE_PIN_10); 
+    nrf_gpio_cfg_output(PULSE_PIN_11); 
+    nrf_gpio_cfg_output(PULSE_PIN_12); 
 
-    // Initialize LED Pins
-    nrf_gpio_cfg_output(CASCADE_PIN_1);
-    nrf_gpio_cfg_output(CASCADE_PIN_2); 
-    nrf_gpio_cfg_output(CASCADE_PIN_3); 
-    nrf_gpio_cfg_output(CASCADE_PIN_4); 
-    nrf_gpio_cfg_output(CASCADE_PIN_5); 
+    // Turn off pulsing pins
+    nrf_gpio_pin_clear(PULSE_PIN_1);
+    nrf_gpio_pin_clear(PULSE_PIN_2);
+    nrf_gpio_pin_clear(PULSE_PIN_3);
+    nrf_gpio_pin_clear(PULSE_PIN_4);
+    nrf_gpio_pin_clear(PULSE_PIN_5);
+    nrf_gpio_pin_clear(PULSE_PIN_6);
+    nrf_gpio_pin_clear(PULSE_PIN_7);
+    nrf_gpio_pin_clear(PULSE_PIN_8);
+    nrf_gpio_pin_clear(PULSE_PIN_9);
+    nrf_gpio_pin_clear(PULSE_PIN_10);
+    nrf_gpio_pin_clear(PULSE_PIN_11);
+    nrf_gpio_pin_clear(PULSE_PIN_12);
 
-    // Turn off Control Pins
-    nrf_gpio_pin_clear(CONTROL_PIN_1);
-    nrf_gpio_pin_clear(CONTROL_PIN_2);
-    nrf_gpio_pin_clear(CONTROL_PIN_3);
-    nrf_gpio_pin_clear(CONTROL_PIN_4);
-
-    // Turn off LEDs
-    nrf_gpio_pin_clear(CASCADE_PIN_1);
-    nrf_gpio_pin_clear(CASCADE_PIN_2); 
-    nrf_gpio_pin_clear(CASCADE_PIN_3); 
-    nrf_gpio_pin_clear(CASCADE_PIN_4); 
-    nrf_gpio_pin_clear(CASCADE_PIN_5); 
+    nrf_gpio_pin_clear(PULSE_PIN_1);
+    nrf_gpio_pin_clear(PULSE_PIN_2);
+    nrf_gpio_pin_clear(PULSE_PIN_3);
+    nrf_gpio_pin_clear(PULSE_PIN_4);
+    nrf_gpio_pin_clear(PULSE_PIN_5);
+    nrf_gpio_pin_clear(PULSE_PIN_6);
+    nrf_gpio_pin_clear(PULSE_PIN_7);
+    nrf_gpio_pin_clear(PULSE_PIN_8);
+    nrf_gpio_pin_clear(PULSE_PIN_9);
+    nrf_gpio_pin_clear(PULSE_PIN_10);
+    nrf_gpio_pin_clear(PULSE_PIN_11);
+    nrf_gpio_pin_clear(PULSE_PIN_12);
 
     uint32_t err_code = app_timer_start(m_app_timer_id, CASCADE_INTERVAL, NULL); // initialize the timer
 }

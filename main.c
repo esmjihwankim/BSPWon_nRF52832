@@ -15,7 +15,7 @@ int main(void)
     log_init();
     lfclk_config();
     timers_init();
-    buttons_leds_init(&erase_bonds);
+    //buttons_leds_init(&erase_bonds);
     ble_stack_init();
     gap_params_init();
     gatt_init();
@@ -23,7 +23,7 @@ int main(void)
     advertising_init();
 
     // Advertising Strength selected 
-    err_code = sd_ble_gap_tx_power_set(BLE_GAP_TX_POWER_ROLE_ADV, m_advertising.adv_handle, +4);
+    err_code = sd_ble_gap_tx_power_set(BLE_GAP_TX_POWER_ROLE_ADV, m_advertising.adv_handle, 0);
     APP_ERROR_CHECK(err_code);
 
     conn_params_init();

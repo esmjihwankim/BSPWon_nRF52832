@@ -18,7 +18,7 @@
 #include "ble_nus.h"
 #include "app_uart.h"
 #include "app_util_platform.h"
-#include "bsp_btn_ble.h"
+//#include "bsp_btn_ble.h"
 #include "nrf_pwr_mgmt.h"
 #include "nrf_drv_saadc.h"
 #include "nrf_drv_ppi.h"
@@ -66,7 +66,7 @@ BLE_ADVERTISING_DEF(m_advertising);                                             
 
 
 void uart_init(void);
-void buttons_leds_init(bool * p_erase_bonds);
+//void buttons_leds_init(bool * p_erase_bonds);
 void ble_stack_init(void);
 void gap_params_init(void);
 void gatt_init(void);
