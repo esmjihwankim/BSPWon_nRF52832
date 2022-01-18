@@ -1,7 +1,7 @@
 # **BSPWon_nRF52**
 Bio Sensor Platform designed to operate with BSPWon iOS/Android </br>
 @Won Research Group, SKKU </br>
-<img src="sensor.PNG" width="550" height = "350">
+<img src="sensor.PNG" width="550" height = "350"> </br>
 #####*(BLE chip integrated into circuit along with power source and an accelerometer)* </br>
 Developed by Jihwan Kim, Sang Uk Park, Sang Hoon Lee</br> 
 Photo taken by Hee Kyu Lee, Won Research Group 
@@ -12,6 +12,7 @@ Photo taken by Hee Kyu Lee, Won Research Group
 >  * Wirelessly transmit custom-made sensor data
 >  * Receive transmitted data from peripheral (The device is supposed to work as both central & peripheral and uses proprietary BLE service)
 >  * Execute commands based on received data
+>  * Feed pulses to a neuromorphic system
 ----------------------------------------------
 
 ## *Data Transmission*
@@ -27,38 +28,49 @@ Photo taken by Hee Kyu Lee, Won Research Group
 ## *Command Execution* 
 --------------------------------------------
 > #### The BLE chip will be programmed to trigger certain actions based on the received string data of the peripheral device. Currently, the chip can execute three key commands:
-> Single LED ON/OFF | Cascade Multiple LED's | Toggle Control Pins
-> ----------------- | -----------------------|---------------------
-> LEDON: String data "LEDON", from the peripheral device will have the chip trigger the registered LED pin as high to turn on the LED. | LEDCASCADE: String data "LEDCASCADE", > > from peripheral device will have the chip trigger multiple pins consecutively based on the timer frequency. | Control_Pin_On: Similar to the LED's, the configured control pins are set to the HIGH state to receive data from devices that may soon be added in the future. 
-> LEDOFF: String data "LEDOFF", from the peripheral device will have the chip trigger the registered LED pin as low to turn off the LED. | LEDCASCADEOFF: String data "LEDCASCADEOFF", from peripheral device will have the chip set all of the registered pins to LOW. | Control_Pin_Off: The control pin is set back to its LOW state, disabling the device. 
---------------------------------------------
+> Single LED ON/OFF | Cascade Multiple LED's | Toggle Control Pins | Feed Pulses to a Neuromorphic System integrated into the nRF Sensor System 
 
 ## * Pin Usage*
 --------------------------------------------
-> #### Already Used Pins (IN-BOARD)
-P0.13 :: Button1  
-P0.14 :: Button2  
-P0.15 :: Button3  
-P0.16 :: Button4  
-P0.17 :: LED1  
-P0.18 :: LED2  
-P0.19 :: LED3  
-P0.20 :: LED4  
-P0.21 :: RESET Button 
-
 > #### Analog Input Pins
+P0.02 :: CH:U <br/>
+P0.03 :: CH:V
 P0.28 :: CH:W  
 P0.29 :: CH:X  
 P0.30 :: CH:Y  
 P0.31 :: CH:Z in BSPWon iOS Application
 
-> #### Cascade Action Pins 
-P0.12<br/>
-P0.22  
-P0.23  
-P0.24  
-P0.25  
+> #### Already Used Pins (On-Board)
+P0.21 :: RESET Button <br/>
+
+
+> #### Pulse Feeding Pins (12 GPIOs in total) 
+P0.04 <br/>
+P0.05
+P0.07
+P0.09
+P0.11
+P0.12
+P0.13
+P0.14
+P0.15
 
 > #### Control Pins
-P0.03 :: Control Pin 1<br/>
-P0.04 :: Control Pin 2
+P0.11 :: Control Pin 1<br/>
+P0.12 :: Control Pin 2
+P0.13 :: Control Pin 3
+P0.14 :: Control Pin 4
+
+> #### Cascade Action Pins 
+P0.11<br/>
+P0.12  
+P0.13  
+P0.14  
+P0.15  
+
+> #### Input from the Neuromorphic ML Classification result
+P0.16<br/>
+P0.17  
+P0.18  
+P0.19  
+P0.20  
