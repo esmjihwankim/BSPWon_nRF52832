@@ -5,6 +5,5 @@ output/
 
 #Algorithms 
 x64/
-.vcxproj
-.txt
-.xlsx
+*.vcxproj
+*.xlsx
