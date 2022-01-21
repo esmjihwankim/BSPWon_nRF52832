@@ -34,11 +34,11 @@ Photo taken by Hee Kyu Lee, Won Research Group
 --------------------------------------------
 > #### Analog Input Pins
 P0.02 :: CH:U <br/>
-P0.03 :: CH:V
-P0.28 :: CH:W  
-P0.29 :: CH:X  
-P0.30 :: CH:Y  
-P0.31 :: CH:Z in BSPWon iOS Application
+P0.03 :: CH:V <br/>
+P0.28 :: CH:W <br/>
+P0.29 :: CH:X <br/>
+P0.30 :: CH:Y <br/>
+P0.31 :: CH:Z in BSPWon iOS Application <br/>
 
 > #### Already Used Pins (On-Board)
 P0.21 :: RESET Button <br/>
@@ -46,31 +46,31 @@ P0.21 :: RESET Button <br/>
 
 > #### Pulse Feeding Pins (12 GPIOs in total) 
 P0.04 <br/>
-P0.05
-P0.07
-P0.09
-P0.11
-P0.12
-P0.13
-P0.14
-P0.15
+P0.05 <br/>
+P0.07 <br/>
+P0.09 <br/>
+P0.11 <br/>
+P0.12 <br/>
+P0.13 <br/>
+P0.14 <br/>
+P0.15 <br/>
 
 > #### Control Pins
 P0.11 :: Control Pin 1<br/>
-P0.12 :: Control Pin 2
-P0.13 :: Control Pin 3
-P0.14 :: Control Pin 4
+P0.12 :: Control Pin 2<br/>
+P0.13 :: Control Pin 3<br/>
+P0.14 :: Control Pin 4<br/>
 
 > #### Cascade Action Pins 
-P0.11<br/>
-P0.12  
-P0.13  
-P0.14  
-P0.15  
+P0.11 <br/>
+P0.12 <br/>
+P0.13 <br/>  
+P0.14 <br/> 
+P0.15 <br/> 
 
 > #### Input from the Neuromorphic ML Classification result
-P0.16<br/>
-P0.17  
-P0.18  
-P0.19  
-P0.20  
+P0.16 <br/>
+P0.17 <br/>
+P0.18 <br/>  
+P0.19 <br/>
+P0.20 <br/>

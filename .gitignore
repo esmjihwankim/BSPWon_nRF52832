@@ -1,3 +1,10 @@
 # BSPWon_nRF52
 
+#Firmware
 output/
+
+#Algorithms 
+x64/
+.vcxproj
+.txt
+.xlsx
