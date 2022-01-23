@@ -4,6 +4,7 @@
 output/
 
 #Algorithms 
+.vs/Acceperometer_Swing_Detection/
 x64/
 *.vcxproj
 *.xlsx
