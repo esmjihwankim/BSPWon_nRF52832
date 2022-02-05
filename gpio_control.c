@@ -35,12 +35,6 @@ void gpio_init(void)
     uint32_t err_code = app_timer_start(m_app_timer_id, CASCADE_INTERVAL, NULL); // initialize the timer
 }
 
-//TODO Pulsing Implementation
-void automatic_pulsing_onoff(int onoff)
-{
-    
-}
-
 /* Turn on and off Control Pins */
 void control_pin1_onoff(int onoff)
 {
@@ -100,8 +94,9 @@ void control_table(ble_nus_evt_t * p_evt)
         printf("\r\nCENTRAL RECEIVED MESSAGE:::%s\r\n", buffer_rx);
 
         // operate LED
-        if(strcmp(buffer_rx, "AUTOMATICPULSEON")==0) automatic_pulsing_onoff(1); 
-        else if(strcmp(buffer_rx, "AUTOMATICPULSEOFF")==0) automatic_pulsing_onoff(0); 
+        //TODO: Automatic pulsing interface call
+        if(strcmp(buffer_rx, "AUTOMATICPULSEON")==0) ;  
+        else if(strcmp(buffer_rx, "AUTOMATICPULSEOFF")==0) ; 
         else if(strcmp(buffer_rx, "LEDCASCADEON")==0)   led_cascade_on();
         else if(strcmp(buffer_rx, "LEDCASCADEOFF")==0)  led_cascade_off();
         else if(strcmp(buffer_rx, "CONTROLPIN1ON")==0)  control_pin1_onoff(1);

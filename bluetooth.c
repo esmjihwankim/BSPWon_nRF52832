@@ -461,7 +461,7 @@ void uart_init(void)
  */
 void advertising_init(void)
 {
-    uint32_t               err_code;
+    uint32_t  err_code;
     ble_advertising_init_t init;
 
     memset(&init, 0, sizeof(init));
@@ -560,8 +560,12 @@ void saadc_sampling_event_enable(void)
     APP_ERROR_CHECK(err_code);
 }
 
+
+/** @brief Called whenver data is read from ADC and sends data via BLE 
+*/ 
 void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
 {
+
     if (p_event->type == NRF_DRV_SAADC_EVT_DONE)
     {
         ret_code_t err_code;
@@ -586,26 +590,34 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         }
         */
 
-        //cpu_get_temperature();
+        register int channel_0_val = p_event->data.done.p_buffer[0];
+        register int channel_1_val = p_event->data.done.p_buffer[1];
+        register int channel_2_val = p_event->data.done.p_buffer[2];
+        register int channel_3_val = p_event->data.done.p_buffer[3];
+        register int channel_4_val = p_event->data.done.p_buffer[4];
+        register int channel_5_val = p_event->data.done.p_buffer[5];
 
-        // Send data over BLE via NUS service. Create string from samples and send string with correct length.
+        // strain detection and accelerometer algorithm
+        if(get_automatic_pulsing() == true) 
+              detection_to_pulsing(channel_0_val, channel_1_val, channel_2_val, channel_3_val, channel_4_val, channel_5_val); 
+
+        // Send data over BLE via NUS service. Create string from samples and send string with correct length.        
         uint8_t nus_string[50];
         bytes_to_send = sprintf(nus_string, 
                                 " %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r",
-                                p_event->data.done.p_buffer[0],
-                                p_event->data.done.p_buffer[1],
-                                p_event->data.done.p_buffer[2],
-                                p_event->data.done.p_buffer[3],
-                                p_event->data.done.p_buffer[4],
-                                p_event->data.done.p_buffer[5]);
-                               
-        printf(nus_string);
+                                channel_0_val,
+                                channel_1_val,
+                                channel_2_val,
+                                channel_3_val,
+                                channel_4_val,
+                                channel_5_val);                       
+        
         err_code = ble_nus_data_send(&m_nus, nus_string, &bytes_to_send, m_conn_handle);
         if ((err_code != NRF_ERROR_INVALID_STATE) && (err_code != NRF_ERROR_NOT_FOUND))
         {
             APP_ERROR_CHECK(err_code);
         }
-	
+
         m_adc_evt_counter++;
     }
 }

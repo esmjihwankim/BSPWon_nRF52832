@@ -33,6 +33,8 @@
 #endif
 
 #include "gpio_control.h"
+#include "detection.h"
+
 #include "temperature.h"
 
 /* Define */
