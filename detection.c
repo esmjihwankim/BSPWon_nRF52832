@@ -24,6 +24,7 @@ void set_automatic_pulsing(int value)
 
 
 
+
 /*@brief provides detection and outputs pulses
 @param
        u_val : strain index finger
@@ -33,7 +34,7 @@ void set_automatic_pulsing(int value)
        y_val : accelerometer y axis 
        z_val : accelerometer z axis 
 */ 
-void detection_to_pulsing(int u_val, int v_val, int w_val, int x_val, int y_val, int z_val)
+void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int z_val)
 {
     const int resting_time = 100; 
     const int sign_time = 200; 
@@ -80,6 +81,7 @@ void detection_to_pulsing(int u_val, int v_val, int w_val, int x_val, int y_val,
             if(state_straight_u == false)
             {
                 state_straight_u = true; 
+                printf("pulse_straight\n\r"); 
                 // u_pulse_straight();
             }
         }
@@ -88,7 +90,8 @@ void detection_to_pulsing(int u_val, int v_val, int w_val, int x_val, int y_val,
             if(state_straight_u == true) 
             {
                 state_straight_u = false; 
-                // u_pulse_bent();  
+                printf("pulse_bent\n\r"); 
+                // u_pulse_bent();
             }
         }
 
@@ -98,6 +101,7 @@ void detection_to_pulsing(int u_val, int v_val, int w_val, int x_val, int y_val,
             if(state_straight_v == false)
             {
                 state_straight_v = true; 
+                printf("v_pulse_straight\n\r"); 
                 // v_pulse_straight(); 
             }
         }
@@ -106,16 +110,18 @@ void detection_to_pulsing(int u_val, int v_val, int w_val, int x_val, int y_val,
             if(state_straight_v == true) 
             {
                 state_straight_v = false; 
+                printf("v_pulse_bent\n\r"); 
                 // v_pulse_bent();
             }
         }
 
-        // w strain 
+        // w strain : ring finger
         if(w_val <= w_avg + avg_deviation_range_strain)
         {
             if(state_straight_w == false)
             {
                 state_straight_w = true; 
+                printf("w_pulse_straight\n\r");
                 // w_pulse_straight(); 
             }
         }
@@ -124,6 +130,7 @@ void detection_to_pulsing(int u_val, int v_val, int w_val, int x_val, int y_val,
             if(state_straight_w == true)
             {
                 state_straight_w = false; 
+                printf("w_pulse_bent\n\r");
                 // w_pulse_bent(); 
             }
         }
@@ -143,8 +150,8 @@ void detection_to_pulsing(int u_val, int v_val, int w_val, int x_val, int y_val,
             {
                 state_avg_range_x = false; 
                 int derivative_x = x_val - x_avg; 
-                if(derivative_x < 0);   // negative pulse 
-                else if(derivative_x > 0);   // positive pulse
+                if(derivative_x < 0) printf("acc_x_negative_pulse\n\r");   // negative pulse 
+                else if(derivative_x > 0) printf("acc_x_positive_pulse\n\r");   // positive pulse
             }
         }
 
@@ -163,11 +170,11 @@ void detection_to_pulsing(int u_val, int v_val, int w_val, int x_val, int y_val,
             {
                 state_avg_range_y = false; 
                 int derivative_y = y_val - y_avg; 
-                if(derivative_y < 0);  // negative pulse 
-                else if(derivative_y > 0);  // positive pulse 
+                if(derivative_y < 0) printf("acc_y_negative_pulse\n\r");   // negative pulse 
+                else if(derivative_y > 0) printf("acc_y_positive_pulse\n\r");   // positive pulse 
             }
         }
-
+        
         // z acc axis
         if(z_val <= (z_avg + avg_deviation_range_acc) && 
            z_val >= (z_avg - avg_deviation_range_acc))
@@ -183,12 +190,10 @@ void detection_to_pulsing(int u_val, int v_val, int w_val, int x_val, int y_val,
             {
                 state_avg_range_z = false; 
                 int derivative_z = z_val - z_avg; 
-                if(derivative_z < 0); // negative pulse 
-                else if(derivative_z > 0);  // positive pulse
+                if(derivative_z < 0) printf("acc_z_negative_pulse\n\r"); // negative pulse 
+                else if(derivative_z > 0) printf("acc_z_positive_pulse\n\r");  // positive pulse
             }
         }
-        
-
     }
     else // initialize 
     {
@@ -206,6 +211,7 @@ void detection_to_pulsing(int u_val, int v_val, int w_val, int x_val, int y_val,
         state_avg_range_x = true;
         state_avg_range_y = true;
         state_avg_range_z = true;
+
         automatic_pulsing_setting(0);
     }
 }

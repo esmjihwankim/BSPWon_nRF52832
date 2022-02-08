@@ -9,6 +9,8 @@
 #include "nrf_drv_clock.h"
 #include "helper.h"
 
+#include "detection.h"
+
 #define CONTROL_PIN_1 11
 #define CONTROL_PIN_2 12
 #define CONTROL_PIN_3 13
@@ -20,20 +22,21 @@
 #define CASCADE_PIN_4 14
 #define CASCADE_PIN_5 15
 
-#define PULSE_PIN_1 4
-#define PULSE_PIN_2 5
-#define PULSE_PIN_3 7
-#define PULSE_PIN_4 9
-#define PULSE_PIN_5 11
-#define PULSE_PIN_6 12
-#define PULSE_PIN_7 13
-#define PULSE_PIN_8 14
-#define PULSE_PIN_9 15
-#define PULSE_PIN_10 22
-#define PULSE_PIN_11 23
-#define PULSE_PIN_12 24
+#define PULSE_PIN_1 4       // Strain Index Straight
+#define PULSE_PIN_2 5       // Strain Index Bent 
+#define PULSE_PIN_3 7       // Strain Middle Striaght 
+#define PULSE_PIN_4 9       // Strain Middle Bent 
+#define PULSE_PIN_5 11      // Strain Ring Straight
+#define PULSE_PIN_6 12      // Strain Ring Bent 
+#define PULSE_PIN_7 13      // Acc X Positive Swing 
+#define PULSE_PIN_8 14      // Acc X Negative Swing 
+#define PULSE_PIN_9 15      // Acc Y Positive Swing 
+#define PULSE_PIN_10 22     // Acc Y Negative Swing 
+#define PULSE_PIN_11 23     // Acc Z Positive Swing 
+#define PULSE_PIN_12 24     // Acc Z Negative Swing 
 
 #define CASCADE_INTERVAL APP_TIMER_TICKS(100)
+#define PULSE_INTERVAL APP_TIMER_TICKS(50)
 
 APP_TIMER_DEF(m_app_timer_id);
 void gpio_init(void);

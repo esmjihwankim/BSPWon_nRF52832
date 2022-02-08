@@ -95,7 +95,7 @@ void control_table(ble_nus_evt_t * p_evt)
 
         // operate LED
         //TODO: Automatic pulsing interface call
-        if(strcmp(buffer_rx, "AUTOMATICPULSEON")==0) ;  
+        if(strcmp(buffer_rx, "AUTOMATICPULSEON")==0) set_automatic_pulsing(1);  
         else if(strcmp(buffer_rx, "AUTOMATICPULSEOFF")==0) ; 
         else if(strcmp(buffer_rx, "LEDCASCADEON")==0)   led_cascade_on();
         else if(strcmp(buffer_rx, "LEDCASCADEOFF")==0)  led_cascade_off();
@@ -110,7 +110,8 @@ void control_table(ble_nus_evt_t * p_evt)
     }
 }
 
-static void app_timer_handler(void * p_context)
+
+static void cascade_timer_handler(void * p_context)
 {
       static bool status1, status2, status3, status4, status5;
 
@@ -136,10 +137,10 @@ static void app_timer_handler(void * p_context)
       else if(!status5) nrf_gpio_pin_set(CASCADE_PIN_5);
 }
 
-void create_timer(void)
+void create_cascade_timer(void)
 {
     ret_code_t err_code;
-    err_code = app_timer_create(&m_app_timer_id, APP_TIMER_MODE_REPEATED, app_timer_handler);
+    err_code = app_timer_create(&m_app_timer_id, APP_TIMER_MODE_REPEATED, cascade_timer_handler);
     APP_ERROR_CHECK(err_code);    
 }
 
@@ -150,8 +151,8 @@ void led_cascade_on(void)
     printf("FUNC LED CASCADE ON\r\n");
     if (app_timer_cnt_get() == 0)
     {
-      create_timer();
-      app_timer_start(m_app_timer_id, CASCADE_INTERVAL, NULL);  // initialize the timer
+        create_cascade_timer();
+        app_timer_start(m_app_timer_id, CASCADE_INTERVAL, NULL);  // initialize the timer
     }
 }
 
@@ -171,6 +172,19 @@ void led_cascade_off(void)
         nrf_gpio_pin_clear(CASCADE_PIN_5); 
         i = 0;
     }
+}
+
+/*@brief Pulse Handler
+*/ 
+static void pulse_timer_handler(void * p_context, int pin_number)
+{
+      static bool status; 
+      static bool cnt = 0;  
+      status = nrf_gpio_pin_read(pin_number); 
+
+      
+      if(status) nrf_gpio_pin_set(pin_number); 
+      else nrf_gpio_pin_clear(pin_number); 
 }
 
 
