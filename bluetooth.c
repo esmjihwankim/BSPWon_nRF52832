@@ -596,9 +596,8 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         register int channel_3_val = p_event->data.done.p_buffer[3];
         register int channel_4_val = p_event->data.done.p_buffer[4];
         register int channel_5_val = p_event->data.done.p_buffer[5];
+        int pulsing_info; 
 
-
-        int32_t pulsing_info; 
         // strain detection and accelerometer algorithm
         if(get_automatic_pulsing() == 1)
         { 
@@ -607,14 +606,17 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         }
         // Send data over BLE via NUS service. Create string from samples and send string with correct length.        
         uint8_t nus_string[50];
+
+        
         bytes_to_send = sprintf(nus_string, 
-                                " %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r",
+                                " %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r",
                                 channel_0_val,
                                 channel_1_val,
                                 channel_2_val,
                                 channel_3_val,
                                 channel_4_val,
-                                channel_5_val);                       
+                                channel_5_val,
+                                pulsing_info);                       
         
         err_code = ble_nus_data_send(&m_nus, nus_string, &bytes_to_send, m_conn_handle);
         if ((err_code != NRF_ERROR_INVALID_STATE) && (err_code != NRF_ERROR_NOT_FOUND))
