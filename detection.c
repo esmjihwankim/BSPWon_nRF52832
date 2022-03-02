@@ -34,7 +34,7 @@ void set_automatic_pulsing(int value)
        y_val : accelerometer y axis 
        z_val : accelerometer z axis 
 */ 
-void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int z_val)
+int32_t sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int z_val)
 {
     const int resting_time = 60; 
     const int sign_time = 100; 
@@ -54,6 +54,8 @@ void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int
     static int u_avg = 0, v_avg = 0, w_avg = 0, 
                x_avg = 0, y_avg = 0, z_avg = 0; 
 
+    int32_t pulsing_info = 0x00; 
+    
     // Average Calculation 
     if(timestamp < 100)
     {
@@ -84,6 +86,7 @@ void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int
                 state_straight_u = true; 
                 printf("pulse_straight\n\r"); 
                 // u_pulse_straight();
+                pulsing_info += 0x80000000; 
             }
         }
         else 
@@ -93,6 +96,8 @@ void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int
                 state_straight_u = false; 
                 printf("pulse_bent\n\r"); 
                 // u_pulse_bent();
+                pulsing_info += 0x10000000;
+
             }
         }
 
@@ -104,6 +109,8 @@ void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int
                 state_straight_v = true; 
                 printf("v_pulse_straight\n\r"); 
                 // v_pulse_straight(); 
+                pulsing_info += 0x08000000;
+
             }
         }
         else
@@ -113,6 +120,8 @@ void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int
                 state_straight_v = false; 
                 printf("v_pulse_bent\n\r"); 
                 // v_pulse_bent();
+                pulsing_info += 0x01000000;
+
             }
         }
 
@@ -124,6 +133,8 @@ void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int
                 state_straight_w = true; 
                 printf("w_pulse_straight\n\r");
                 // w_pulse_straight(); 
+                pulsing_info += 0x00800000;
+
             }
         }
         else 
@@ -133,6 +144,7 @@ void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int
                 state_straight_w = false; 
                 printf("w_pulse_bent\n\r");
                 // w_pulse_bent(); 
+                pulsing_info += 0x00100000;
             }
         }
 
@@ -151,8 +163,16 @@ void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int
             {
                 state_avg_range_x = false; 
                 int derivative_x = x_val - x_avg; 
-                if(derivative_x < 0) printf("acc_x_negative_pulse\n\r");   // negative pulse 
-                else if(derivative_x > 0) printf("acc_x_positive_pulse\n\r");   // positive pulse
+                if(derivative_x < 0) 
+                { 
+                    printf("acc_x_negative_pulse\n\r");   // negative pulse 
+                    pulsing_info += 0x00008000; 
+                }
+                else if(derivative_x > 0) 
+                {
+                    printf("acc_x_positive_pulse\n\r");   // positive pulse
+                    pulsing_info += 0x00001000; 
+                }
             }
         }
 
@@ -171,8 +191,16 @@ void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int
             {
                 state_avg_range_y = false; 
                 int derivative_y = y_val - y_avg; 
-                if(derivative_y < 0) printf("acc_y_negative_pulse\n\r");   // negative pulse 
-                else if(derivative_y > 0) printf("acc_y_positive_pulse\n\r");   // positive pulse 
+                if(derivative_y < 0) 
+                {
+                    printf("acc_y_negative_pulse\n\r");   // negative pulse 
+                    pulsing_info += 0x00000800; 
+                }
+                else if(derivative_y > 0)
+                {
+                    printf("acc_y_positive_pulse\n\r");   // positive pulse 
+                    pulsing_info += 0x00000100;
+                }
             }
         }
         
@@ -191,8 +219,16 @@ void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int
             {
                 state_avg_range_z = false; 
                 int derivative_z = z_val - z_avg; 
-                if(derivative_z < 0) printf("acc_z_negative_pulse\n\r"); // negative pulse 
-                else if(derivative_z > 0) printf("acc_z_positive_pulse\n\r");  // positive pulse
+                if(derivative_z < 0) 
+                {
+                    printf("acc_z_negative_pulse\n\r"); // negative pulse 
+                    pulsing_info += 0x00000080; 
+                }
+                else if(derivative_z > 0)
+                { 
+                    printf("acc_z_positive_pulse\n\r");  // positive pulse
+                    pulsing_info += 0x00000010; 
+                }
             }
         }
     }
@@ -218,6 +254,8 @@ void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int
 
         automatic_pulsing_setting(0);
     }
+
+    return pulsing_info; 
 }
 
 

@@ -597,10 +597,14 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         register int channel_4_val = p_event->data.done.p_buffer[4];
         register int channel_5_val = p_event->data.done.p_buffer[5];
 
-        // strain detection and accelerometer algorithm
-        if(get_automatic_pulsing() == 1) sensor_detection(channel_0_val, channel_1_val, channel_2_val, 
-                                                          channel_3_val, channel_4_val, channel_5_val); 
 
+        int32_t pulsing_info; 
+        // strain detection and accelerometer algorithm
+        if(get_automatic_pulsing() == 1)
+        { 
+            pulsing_info = sensor_detection(channel_0_val, channel_1_val, channel_2_val, 
+                                            channel_3_val, channel_4_val, channel_5_val); 
+        }
         // Send data over BLE via NUS service. Create string from samples and send string with correct length.        
         uint8_t nus_string[50];
         bytes_to_send = sprintf(nus_string, 
