@@ -36,10 +36,10 @@ void set_automatic_pulsing(int value)
 */ 
 void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int z_val)
 {
-    const int resting_time = 100; 
-    const int sign_time = 200; 
-    const int avg_deviation_range_strain = 100; 
-    const int avg_deviation_range_acc = 50; 
+    const int resting_time = 60; 
+    const int sign_time = 100; 
+    const int avg_deviation_range_strain = 300; 
+    const int avg_deviation_range_acc = 300; 
 
     static bool state_straight_u = true;
     static bool state_straight_v = true;
@@ -66,6 +66,7 @@ void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int
     }
     else if(timestamp == 100) 
     {
+        printf("sign time started\n\r");
         u_avg /= 100; 
         v_avg /= 100; 
         w_avg /= 100; 
@@ -197,6 +198,9 @@ void sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int
     }
     else // initialize 
     {
+
+        printf("AUTOMATIC PULSING PERIOD FINISHED\n\r");
+        timestamp = 0; 
         u_avg = 0;
         v_avg = 0; 
         w_avg = 0; 
