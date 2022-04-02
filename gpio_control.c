@@ -32,8 +32,6 @@ void gpio_init(void)
     nrf_gpio_pin_clear(PULSE_PIN_11);
     nrf_gpio_pin_clear(PULSE_PIN_12);
 
-    uint32_t err_code = app_timer_start(m_cascade_app_timer_id, CASCADE_INTERVAL, NULL); // initialize the timer
-    err_code = app_timer_start(m_pulsing_app_timer_id, PULSE_INTERVAL, NULL);
 }
 
 /* Turn on and off Control Pins */
@@ -112,6 +110,25 @@ void control_table(ble_nus_evt_t * p_evt)
 }
 
 
+
+/**@brief Function for initializing the timer module.
+ */
+void lfclk_config(void)
+{
+  ret_code_t err_code = nrf_drv_clock_init();
+  APP_ERROR_CHECK(err_code);
+
+  nrf_drv_clock_lfclk_request(NULL);
+}
+
+
+void timers_init(void)
+{
+    ret_code_t err_code = app_timer_init();
+    APP_ERROR_CHECK(err_code);
+}
+
+
 static void cascade_timer_handler(void * p_context)
 {
       static bool status1, status2, status3, status4, status5;
@@ -138,21 +155,16 @@ static void cascade_timer_handler(void * p_context)
       else if(!status5) nrf_gpio_pin_set(CASCADE_PIN_5);
 }
 
-void create_cascade_timer(void)
-{
-    ret_code_t err_code;
-    err_code = app_timer_create(&m_cascade_app_timer_id, APP_TIMER_MODE_REPEATED, cascade_timer_handler);
-    APP_ERROR_CHECK(err_code);    
-}
-
 
 /* LED Control Functions */
 void led_cascade_on(void)
 {
+    ret_code_t err_code;
     printf("FUNC LED CASCADE ON\r\n");
     if (app_timer_cnt_get() == 0)
-    {
-        create_cascade_timer();
+    {   
+        err_code = app_timer_create(&m_cascade_app_timer_id, APP_TIMER_MODE_REPEATED, cascade_timer_handler);
+        APP_ERROR_CHECK(err_code);    
         app_timer_start(m_cascade_app_timer_id, CASCADE_INTERVAL, NULL);  // initialize the timer
     }
 }
@@ -173,9 +185,12 @@ void led_cascade_off(void)
         nrf_gpio_pin_clear(CASCADE_PIN_5); 
         i = 0;
     }
+    app_timer_stop(m_cascade_app_timer_id);
 }
 
+
 /*@brief Pulse Handler
+Single pulse -> using single shot mode in application timer 
 */ 
 static void pulse_timer_handler(void * p_context, int pin_number)
 {

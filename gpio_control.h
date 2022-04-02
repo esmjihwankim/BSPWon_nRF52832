@@ -40,6 +40,10 @@
 APP_TIMER_DEF(m_cascade_app_timer_id);
 APP_TIMER_DEF(m_pulsing_app_timer_id);
 
+
+
+void timers_init(void);
+void lfclk_config(void);
 void gpio_init(void);
 void control_table(ble_nus_evt_t * p_evt);
 void led_on(void); 

@@ -1,25 +1,6 @@
 #include "helper.h"
 
 
-/**@brief Function for initializing the timer module.
- */
-void lfclk_config(void)
-{
-  ret_code_t err_code = nrf_drv_clock_init();
-  APP_ERROR_CHECK(err_code);
-
-  nrf_drv_clock_lfclk_request(NULL);
-
-}
-
-
-void timers_init(void)
-{
-    ret_code_t err_code = app_timer_init();
-    APP_ERROR_CHECK(err_code);
-}
-
-
 
 /**@brief Function for initializing the nrf log module.
  */
