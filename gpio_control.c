@@ -32,7 +32,8 @@ void gpio_init(void)
     nrf_gpio_pin_clear(PULSE_PIN_11);
     nrf_gpio_pin_clear(PULSE_PIN_12);
 
-    uint32_t err_code = app_timer_start(m_app_timer_id, CASCADE_INTERVAL, NULL); // initialize the timer
+    uint32_t err_code = app_timer_start(m_cascade_app_timer_id, CASCADE_INTERVAL, NULL); // initialize the timer
+    err_code = app_timer_start(m_pulsing_app_timer_id, PULSE_INTERVAL, NULL);
 }
 
 /* Turn on and off Control Pins */
@@ -140,19 +141,19 @@ static void cascade_timer_handler(void * p_context)
 void create_cascade_timer(void)
 {
     ret_code_t err_code;
-    err_code = app_timer_create(&m_app_timer_id, APP_TIMER_MODE_REPEATED, cascade_timer_handler);
+    err_code = app_timer_create(&m_cascade_app_timer_id, APP_TIMER_MODE_REPEATED, cascade_timer_handler);
     APP_ERROR_CHECK(err_code);    
 }
 
-/* LED Control Functions */
 
+/* LED Control Functions */
 void led_cascade_on(void)
 {
     printf("FUNC LED CASCADE ON\r\n");
     if (app_timer_cnt_get() == 0)
     {
         create_cascade_timer();
-        app_timer_start(m_app_timer_id, CASCADE_INTERVAL, NULL);  // initialize the timer
+        app_timer_start(m_cascade_app_timer_id, CASCADE_INTERVAL, NULL);  // initialize the timer
     }
 }
 
@@ -164,7 +165,7 @@ void led_cascade_off(void)
     printf("FUNC LED CASCADE OFF\r\n");
     if (app_timer_cnt_get() != 0)
     {
-        app_timer_stop(m_app_timer_id);
+        app_timer_stop(m_cascade_app_timer_id);
         nrf_gpio_pin_clear(CASCADE_PIN_1);
         nrf_gpio_pin_clear(CASCADE_PIN_2); 
         nrf_gpio_pin_clear(CASCADE_PIN_3);
@@ -182,7 +183,6 @@ static void pulse_timer_handler(void * p_context, int pin_number)
       static bool cnt = 0;  
       status = nrf_gpio_pin_read(pin_number); 
 
-      
       if(status) nrf_gpio_pin_set(pin_number); 
       else nrf_gpio_pin_clear(pin_number); 
 }

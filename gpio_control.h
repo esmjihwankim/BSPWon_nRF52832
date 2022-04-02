@@ -8,7 +8,6 @@
 #include "nrf_drv_timer.h"
 #include "nrf_drv_clock.h"
 #include "helper.h"
-
 #include "detection.h"
 
 #define CONTROL_PIN_1 11
@@ -38,7 +37,9 @@
 #define CASCADE_INTERVAL APP_TIMER_TICKS(100)
 #define PULSE_INTERVAL APP_TIMER_TICKS(50)
 
-APP_TIMER_DEF(m_app_timer_id);
+APP_TIMER_DEF(m_cascade_app_timer_id);
+APP_TIMER_DEF(m_pulsing_app_timer_id);
+
 void gpio_init(void);
 void control_table(ble_nus_evt_t * p_evt);
 void led_on(void); 
