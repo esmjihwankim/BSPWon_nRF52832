@@ -52,6 +52,7 @@ void led_cascade_on(void);
 void led_cascade_off(void);
 void led_toggle(void);
 
+void give_pulse(int pin_number); 
 
 
 #endif

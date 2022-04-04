@@ -234,7 +234,6 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
     }
     else // initialize 
     {
-
         printf("AUTOMATIC PULSING PERIOD FINISHED\n\r");
         timestamp = 0; 
         u_avg = 0;
@@ -253,6 +252,8 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         state_avg_range_z = true;
 
         automatic_pulsing_setting(0);
+
+        
     }
 
     if(pulsing_info != 0) printf("%d\n\r", pulsing_info); 

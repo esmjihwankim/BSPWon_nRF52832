@@ -192,14 +192,28 @@ void led_cascade_off(void)
 /*@brief Pulse Handler
 Single pulse -> using single shot mode in application timer 
 */ 
-static void pulse_timer_handler(void * p_context, int pin_number)
+static void pulse_timer_handler(void * p_context)
 {
       static bool status; 
       static bool cnt = 0;  
-      status = nrf_gpio_pin_read(pin_number); 
 
+      //TODO: compromise context and pin number parameter exchange
+      int pin_number = 13; // dummy var 
+      status = nrf_gpio_pin_read(pin_number); 
       if(status) nrf_gpio_pin_set(pin_number); 
       else nrf_gpio_pin_clear(pin_number); 
+}
+
+
+/*@brief interface for pulsing 
+*/
+void give_pulse(int pin_number)
+{
+      ret_code_t err_code; 
+      err_code = app_timer_create(&m_pulsing_app_timer_id, APP_TIMER_MODE_SINGLE_SHOT, pulse_timer_handler);
+      APP_ERROR_CHECK(err_code); 
+      err_code = app_timer_start(&m_pulsing_app_timer_id, PULSE_INTERVAL, NULL);    
+      APP_ERROR_CHECK(err_code);
 }
 
 
