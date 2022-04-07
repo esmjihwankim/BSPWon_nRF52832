@@ -210,10 +210,44 @@ static void pulse_timer_handler(void * p_context)
 void give_pulse(int pin_number)
 {
       ret_code_t err_code; 
-      err_code = app_timer_create(&m_pulsing_app_timer_id, APP_TIMER_MODE_SINGLE_SHOT, pulse_timer_handler);
-      APP_ERROR_CHECK(err_code); 
-      err_code = app_timer_start(&m_pulsing_app_timer_id, PULSE_INTERVAL, NULL);    
-      APP_ERROR_CHECK(err_code);
+
+      switch(pin_number)
+      {
+      case 1: 
+        err_code = app_timer_create(&m_pulsing_ch1_timer_id, APP_TIMER_MODE_SINGLE_SHOT, pulse_timer_handler);
+        APP_ERROR_CHECK(err_code); 
+        err_code = app_timer_start(&m_pulsing_ch1_timer_id, PULSE_INTERVAL, NULL);    
+        APP_ERROR_CHECK(err_code);
+        break;
+      case 2: 
+        
+        break;
+      case 3:
+        break;
+      case 4:
+        break;
+      case 5: 
+        break; 
+      case 6: 
+        break;
+      case 7:
+        break;
+      case 8: 
+        break;
+      case 9:
+        break;
+      case 10:
+        break;
+      case 11:
+        break;
+      case 12:
+        break;
+      case 13:
+        break;
+      case 14:
+        break; 
+      }
+      
 }
 
 
