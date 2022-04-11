@@ -38,6 +38,7 @@
 #define PULSE_INTERVAL APP_TIMER_TICKS(50)
 
 APP_TIMER_DEF(m_cascade_app_timer_id);
+
 APP_TIMER_DEF(m_pulsing_ch1_timer_id);
 APP_TIMER_DEF(m_pulsing_ch2_timer_id);
 APP_TIMER_DEF(m_pulsing_ch3_timer_id);

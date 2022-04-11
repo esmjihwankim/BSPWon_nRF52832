@@ -122,13 +122,6 @@ void lfclk_config(void)
 }
 
 
-void timers_init(void)
-{
-    ret_code_t err_code = app_timer_init();
-    APP_ERROR_CHECK(err_code);
-}
-
-
 static void cascade_timer_handler(void * p_context)
 {
       static bool status1, status2, status3, status4, status5;
@@ -162,9 +155,7 @@ void led_cascade_on(void)
     ret_code_t err_code;
     printf("FUNC LED CASCADE ON\r\n");
     if (app_timer_cnt_get() == 0)
-    {   
-        err_code = app_timer_create(&m_cascade_app_timer_id, APP_TIMER_MODE_REPEATED, cascade_timer_handler);
-        APP_ERROR_CHECK(err_code);    
+    {    
         app_timer_start(m_cascade_app_timer_id, CASCADE_INTERVAL, NULL);  // initialize the timer
     }
 }
@@ -192,16 +183,64 @@ void led_cascade_off(void)
 /*@brief Pulse Handler
 Single pulse -> using single shot mode in application timer 
 */ 
-static void pulse_timer_handler(void * p_context)
-{
-      static bool status; 
-      static bool cnt = 0;  
+static void app_pulse_1_timer_handler(void * p_context)
+{  
+    nrf_gpio_pin_set(PULSE_PIN_1);    
+}
 
-      //TODO: compromise context and pin number parameter exchange
-      int pin_number = 13; // dummy var 
-      status = nrf_gpio_pin_read(pin_number); 
-      if(status) nrf_gpio_pin_set(pin_number); 
-      else nrf_gpio_pin_clear(pin_number); 
+static void app_pulse_2_timer_handler(void * p_context)
+{  
+    nrf_gpio_pin_set(PULSE_PIN_2);    
+}
+
+static void app_pulse_3_timer_handler(void * p_context)
+{  
+    nrf_gpio_pin_set(PULSE_PIN_3);    
+}
+
+static void app_pulse_4_timer_handler(void * p_context)
+{  
+    nrf_gpio_pin_set(PULSE_PIN_4);    
+}
+
+static void app_pulse_5_timer_handler(void * p_context)
+{  
+    nrf_gpio_pin_set(PULSE_PIN_5);    
+}
+
+static void app_pulse_6_timer_handler(void * p_context)
+{  
+    nrf_gpio_pin_set(PULSE_PIN_6);    
+}
+
+static void app_pulse_7_timer_handler(void * p_context)
+{  
+    nrf_gpio_pin_set(PULSE_PIN_7);    
+}
+
+static void app_pulse_8_timer_handler(void * p_context)
+{  
+    nrf_gpio_pin_set(PULSE_PIN_8);    
+}
+
+static void app_pulse_9_timer_handler(void * p_context)
+{  
+    nrf_gpio_pin_set(PULSE_PIN_9);    
+}
+
+static void app_pulse_10_timer_handler(void * p_context)
+{  
+    nrf_gpio_pin_set(PULSE_PIN_10);    
+}
+
+static void app_pulse_11_timer_handler(void * p_context)
+{  
+    nrf_gpio_pin_set(PULSE_PIN_11);    
+}
+
+static void app_pulse_12_timer_handler(void * p_context)
+{  
+    nrf_gpio_pin_set(PULSE_PIN_12);    
 }
 
 
@@ -214,40 +253,77 @@ void give_pulse(int pin_number)
       switch(pin_number)
       {
       case 1: 
-        err_code = app_timer_create(&m_pulsing_ch1_timer_id, APP_TIMER_MODE_SINGLE_SHOT, pulse_timer_handler);
-        APP_ERROR_CHECK(err_code); 
-        err_code = app_timer_start(&m_pulsing_ch1_timer_id, PULSE_INTERVAL, NULL);    
+        err_code = app_timer_start(m_pulsing_ch1_timer_id, PULSE_INTERVAL, NULL);    
         APP_ERROR_CHECK(err_code);
         break;
       case 2: 
-        
+        err_code = app_timer_start(m_pulsing_ch2_timer_id, PULSE_INTERVAL, NULL);    
+        APP_ERROR_CHECK(err_code);
         break;
       case 3:
+        err_code = app_timer_start(m_pulsing_ch3_timer_id, PULSE_INTERVAL, NULL);    
+        APP_ERROR_CHECK(err_code);
         break;
       case 4:
+        err_code = app_timer_start(m_pulsing_ch4_timer_id, PULSE_INTERVAL, NULL);    
+        APP_ERROR_CHECK(err_code);
         break;
       case 5: 
+        err_code = app_timer_start(m_pulsing_ch5_timer_id, PULSE_INTERVAL, NULL);    
+        APP_ERROR_CHECK(err_code);
         break; 
-      case 6: 
+      case 6:
+        err_code = app_timer_start(m_pulsing_ch6_timer_id, PULSE_INTERVAL, NULL);    
+        APP_ERROR_CHECK(err_code); 
         break;
       case 7:
+        err_code = app_timer_start(m_pulsing_ch7_timer_id, PULSE_INTERVAL, NULL);    
+        APP_ERROR_CHECK(err_code);
         break;
       case 8: 
+        err_code = app_timer_start(m_pulsing_ch8_timer_id, PULSE_INTERVAL, NULL);    
+        APP_ERROR_CHECK(err_code);
         break;
       case 9:
+        err_code = app_timer_start(m_pulsing_ch9_timer_id, PULSE_INTERVAL, NULL);    
+        APP_ERROR_CHECK(err_code);
         break;
       case 10:
+        err_code = app_timer_start(m_pulsing_ch10_timer_id, PULSE_INTERVAL, NULL);    
+        APP_ERROR_CHECK(err_code);
         break;
       case 11:
+        err_code = app_timer_start(m_pulsing_ch11_timer_id, PULSE_INTERVAL, NULL);    
+        APP_ERROR_CHECK(err_code);
         break;
       case 12:
+        err_code = app_timer_start(m_pulsing_ch12_timer_id, PULSE_INTERVAL, NULL);    
+        APP_ERROR_CHECK(err_code);
         break;
-      case 13:
-        break;
-      case 14:
-        break; 
-      }
-      
+      }    
+}
+
+
+void timers_init(void)
+{
+    ret_code_t err_code = app_timer_init();
+    APP_ERROR_CHECK(err_code);
+
+    err_code = app_timer_create(&m_cascade_app_timer_id, APP_TIMER_MODE_REPEATED, cascade_timer_handler);
+
+    err_code = app_timer_create(&m_pulsing_ch1_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_1_timer_handler); 
+    err_code = app_timer_create(&m_pulsing_ch2_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_2_timer_handler); 
+    err_code = app_timer_create(&m_pulsing_ch3_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_3_timer_handler); 
+    err_code = app_timer_create(&m_pulsing_ch4_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_4_timer_handler); 
+    err_code = app_timer_create(&m_pulsing_ch5_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_5_timer_handler); 
+    err_code = app_timer_create(&m_pulsing_ch6_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_6_timer_handler); 
+    err_code = app_timer_create(&m_pulsing_ch7_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_7_timer_handler); 
+    err_code = app_timer_create(&m_pulsing_ch8_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_8_timer_handler); 
+    err_code = app_timer_create(&m_pulsing_ch9_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_9_timer_handler); 
+    err_code = app_timer_create(&m_pulsing_ch10_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_10_timer_handler); 
+    err_code = app_timer_create(&m_pulsing_ch11_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_11_timer_handler); 
+    err_code = app_timer_create(&m_pulsing_ch12_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_12_timer_handler); 
+    APP_ERROR_CHECK(err_code);
 }
 
 
