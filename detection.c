@@ -23,8 +23,6 @@ void set_automatic_pulsing(int value)
 }
 
 
-
-
 /*@brief provides detection and outputs pulses
 @param
        u_val : strain index finger
@@ -37,9 +35,9 @@ void set_automatic_pulsing(int value)
 int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int z_val)
 {
     const int resting_time = 60; 
-    const int sign_time = 100; 
-    const int avg_deviation_range_strain = 300; 
-    const int avg_deviation_range_acc = 300; 
+    const int sign_time = 100;
+    const int avg_deviation_range_strain = 300;
+    const int avg_deviation_range_acc = 300;
 
     static bool state_straight_u = true;
     static bool state_straight_v = true;
@@ -121,7 +119,6 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
                 printf("v_pulse_bent\n\r"); 
                 give_pulse(4);
                 pulsing_info += 0b000100000000;
-
             }
         }
 
@@ -258,8 +255,6 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         state_avg_range_z = true;
 
         automatic_pulsing_setting(0);
-
-        
     }
 
     if(pulsing_info != 0) printf("%d\n\r", pulsing_info); 

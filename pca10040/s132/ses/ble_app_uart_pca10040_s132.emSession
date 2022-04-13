@@ -54,16 +54,18 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="37" y="572" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../bluetooth.c" selected="0" top="554" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="45" y="138" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../gpio_control.c" selected="1" top="113" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="24" y="56" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../bluetooth.h" selected="0" top="36" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="31" y="607" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../bluetooth.c" selected="0" top="123" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="40" y="207" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../gpio_control.c" selected="0" top="279" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="24" y="12" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../bluetooth.h" selected="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="7" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../detection.h" selected="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="14" useTextEdit="1" openedFrom="C:/Nordic/nRF5_SDK_17.0.2_d674dde/examples/Won_nRF/BSPWon_nRF52/main.c" useBinaryEdit="0" left="0" path="../../../helper.c" selected="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="18" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../helper.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="6" y="16" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../main.c" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../temperature.c" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="36" y="41" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../gpio_control.h" selected="0" top="36" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="33" y="233" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../detection.c" selected="0" top="33" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="23" y="28" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../main.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="1" y="10" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../temperature.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="54" y="25" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../gpio_control.h" selected="1" top="3" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="4" y="6" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../detection.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../main.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../config/sdk_config.h" selected="0" top="60" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="ble_app_uart_pca10040_s132" fileDialogDefaultFilter="*.c;*.cpp;*.cxx;*.cc;*.h;*.hpp;*.hxx" autoConnectTarget="J-Link" buildConfiguration="Release" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="C:/Nordic/nRF5_SDK_17.0.2_d674dde/examples/Won_nRF/BSPWon_nRF52" debugSearchPath="" autoConnectCapabilities="3711"/>
+ <ARMCrossStudioWindow activeProject="ble_app_uart_pca10040_s132" fileDialogDefaultFilter="*.c;*.cpp;*.cxx;*.cc;*.h;*.hpp;*.hxx" autoConnectTarget="J-Link" buildConfiguration="Release" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="C:/Nordic/nRF5_SDK_17.0.2_d674dde/examples/Won_nRF/BSPWon_nRF52" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>
