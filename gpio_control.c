@@ -95,7 +95,7 @@ void control_table(ble_nus_evt_t * p_evt)
         // operate LED
         //TODO: Automatic pulsing interface call
         if(strcmp(buffer_rx, "AUTOMATICPULSEON")==0) set_automatic_pulsing(1);  
-        else if(strcmp(buffer_rx, "AUTOMATICPULSEOFF")==0) ; 
+        else if(strcmp(buffer_rx, "AUTOMATICPULSEOFF")==0) set_automatic_pulsing(0); 
         else if(strcmp(buffer_rx, "LEDCASCADEON")==0)   led_cascade_on();
         else if(strcmp(buffer_rx, "LEDCASCADEOFF")==0)  led_cascade_off();
         else if(strcmp(buffer_rx, "CONTROLPIN1ON")==0)  control_pin1_onoff(1);

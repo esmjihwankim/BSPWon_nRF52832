@@ -54,16 +54,16 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="31" y="607" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../bluetooth.c" selected="0" top="123" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="40" y="207" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../gpio_control.c" selected="0" top="279" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="24" y="12" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../bluetooth.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="7" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../detection.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="46" y="617" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../bluetooth.c" selected="0" top="595" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="324" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../gpio_control.c" selected="1" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="45" y="64" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../bluetooth.h" selected="0" top="63" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="88" y="11" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../detection.h" selected="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="14" useTextEdit="1" openedFrom="C:/Nordic/nRF5_SDK_17.0.2_d674dde/examples/Won_nRF/BSPWon_nRF52/main.c" useBinaryEdit="0" left="0" path="../../../helper.c" selected="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="18" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../helper.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="23" y="28" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../main.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="23" y="28" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../main.c" selected="0" top="6" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="1" y="10" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../temperature.c" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="54" y="25" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../gpio_control.h" selected="1" top="3" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="4" y="6" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../detection.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="52" y="33" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../gpio_control.h" selected="0" top="54" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="15" y="11" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../detection.c" selected="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../main.h" selected="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../config/sdk_config.h" selected="0" top="60" codecName="Default"/>
  </Files>

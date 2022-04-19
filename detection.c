@@ -5,11 +5,20 @@
 // 0
 // 1
 // 2
+
+enum Pulseing_Status {
+    ON = 0, 
+    AVERAGING_STATE,
+    SIGN_STATE,
+    OFF
+};
+
+
 int automatic_pulsing_setting(int input)
 {
     static int automatic_pulsing = 0; 
     if(input == 0 || input == 1) automatic_pulsing = input;
-    return  automatic_pulsing;
+    return automatic_pulsing;
 }
 
 int get_automatic_pulsing(void)
@@ -21,7 +30,6 @@ void set_automatic_pulsing(int value)
 {
     automatic_pulsing_setting(value); 
 }
-
 
 /*@brief provides detection and outputs pulses
 @param
