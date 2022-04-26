@@ -92,12 +92,14 @@ void control_table(ble_nus_evt_t * p_evt)
         
         printf("\r\nCENTRAL RECEIVED MESSAGE:::%s\r\n", buffer_rx);
 
-        // operate LED
-        //TODO: Automatic pulsing interface call
-        if(strcmp(buffer_rx, "AUTOMATICPULSEON")==0) set_automatic_pulsing(1);  
-        else if(strcmp(buffer_rx, "AUTOMATICPULSEOFF")==0) set_automatic_pulsing(0); 
+        // Automatic Pulsing Stages 
+        if(strcmp(buffer_rx, "AUTOMATICPULSEAVERAGE")==0) set_automatic_pulsing(0);  
+        else if(strcmp(buffer_rx, "AUTOMATICPULSEDETECT")==0) set_automatic_pulsing(1);
+        else if(strcmp(buffer_rx, "AUTOMATICPULSEEND")==0) set_automatic_pulsing(2);
+        // Command for LED Cascade 
         else if(strcmp(buffer_rx, "LEDCASCADEON")==0)   led_cascade_on();
         else if(strcmp(buffer_rx, "LEDCASCADEOFF")==0)  led_cascade_off();
+        //Command for Pin Control 
         else if(strcmp(buffer_rx, "CONTROLPIN1ON")==0)  control_pin1_onoff(1);
         else if(strcmp(buffer_rx, "CONTROLPIN1OFF")==0) control_pin1_onoff(0); 
         else if(strcmp(buffer_rx, "CONTROLPIN2ON")==0)  control_pin2_onoff(1);

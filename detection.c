@@ -6,7 +6,7 @@
 // 1
 // 2
 
-enum Pulseing_Status {
+enum Pulsing_Status {
     ON = 0, 
     AVERAGING_STATE,
     SIGN_STATE,
