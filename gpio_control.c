@@ -93,9 +93,12 @@ void control_table(ble_nus_evt_t * p_evt)
         printf("\r\nCENTRAL RECEIVED MESSAGE:::%s\r\n", buffer_rx);
 
         // Automatic Pulsing Stages 
-        if(strcmp(buffer_rx, "AUTOMATICPULSEAVERAGE")==0) set_automatic_pulsing(0);  
-        else if(strcmp(buffer_rx, "AUTOMATICPULSEDETECT")==0) set_automatic_pulsing(1);
-        else if(strcmp(buffer_rx, "AUTOMATICPULSEEND")==0) set_automatic_pulsing(2);
+        if(strcmp(buffer_rx, "AUTOMATICPULSEOFF")==0) set_automatic_pulsing_state((Pulsing_Status_t)OFF_STATE);  
+        else if(strcmp(buffer_rx, "AUTOMATICPULSEADDUP")==0) set_automatic_pulsing_state((Pulsing_Status_t)ADDUP_STATE);
+        else if(strcmp(buffer_rx, "AUTOMATICPULSEAVERAGE")==0) set_automatic_pulsing_state((Pulsing_Status_t)AVERAGING_STATE);
+        else if(strcmp(buffer_rx, "AUTOMATICPULSESIGN")==0) set_automatic_pulsing_state((Pulsing_Status_t)SIGN_STATE);
+        else if(strcmp(buffer_rx, "AUTOMATICPULSEEND")==0) set_automatic_pulsing_state((Pulsing_Status_t)END_STATE);
+
         // Command for LED Cascade 
         else if(strcmp(buffer_rx, "LEDCASCADEON")==0)   led_cascade_on();
         else if(strcmp(buffer_rx, "LEDCASCADEOFF")==0)  led_cascade_off();
