@@ -10,9 +10,9 @@
 
 int automatic_pulsing_setting(Pulsing_Status_t input)
 {
-    static Pulsing_Status_t automatic_pulsing = 0; 
-    if(input == OFF_STATE || input == AVERAGING_STATE || input == SIGN_STATE || input == END_STATE) automatic_pulsing = input;
-    return automatic_pulsing;
+    static Pulsing_Status_t state = 0; 
+    if(input == OFF_STATE || input == ON_STATE) state = input;
+    return state;
 }
 
 int get_automatic_pulsing_state(void)
@@ -37,8 +37,8 @@ void set_automatic_pulsing_state(int value)
  */ 
 int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int z_val)
 {
-    //const int resting_time = 60; 
-    //const int sign_time = 100;
+    const int resting_time = 60; 
+    const int sign_time = 100;
     const int avg_deviation_range_strain = 300;
     const int avg_deviation_range_acc = 300;
 
@@ -50,15 +50,18 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
     static bool state_avg_range_y = true;
     static bool state_avg_range_z = true;
     
-    //static int timestamp = 0;
-    //timestamp++;
+    static int timestamp = 0;
     static int u_avg = 0, v_avg = 0, w_avg = 0, 
                x_avg = 0, y_avg = 0, z_avg = 0; 
 
     int32_t pulsing_info = 0x00; 
     
+    if(timestamp == 0)
+    {
+        printf("addup state entered::stay still\n\r"); 
+    }
     // Average Calculation 
-    if(get_automatic_pulsing_state() == ADDUP_STATE)
+    else if(timestamp < 100)
     {
         u_avg += u_val; 
         v_avg += v_val; 
@@ -67,9 +70,9 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         y_avg += y_val; 
         z_avg += z_val;
     }
-    else if(get_automatic_pulsing_state() == AVERAGING_STATE) 
+    else if(timestamp == 100) 
     {
-        printf("sign time started\n\r");
+        printf("gesture state entered::perform gesture\n\r");
         u_avg /= 100; 
         v_avg /= 100; 
         w_avg /= 100; 
@@ -77,7 +80,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         y_avg /= 100; 
         z_avg /= 100; 
     }
-    else if(get_automatic_pulsing_state() == SIGN_STATE)
+    else if(timestamp >= 100 && timestamp <= 300)
     {
         // u strain 
         if(u_val <= u_avg + avg_deviation_range_strain)
@@ -238,9 +241,10 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
             }
         }
     }
-    else if(get_automatic_pulsing_state() == END_STATE) // initialize 
+    else // initialize 
     {
         printf("AUTOMATIC PULSING PERIOD FINISHED\n\r");
+        timestamp = 0; 
         u_avg = 0;
         v_avg = 0; 
         w_avg = 0; 
@@ -255,8 +259,11 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         state_avg_range_x = true;
         state_avg_range_y = true;
         state_avg_range_z = true;
+
+        automatic_pulsing_setting(OFF_STATE);
     }
 
+    timestamp++;
     if(pulsing_info != 0) printf("%d\n\r", pulsing_info); 
     return pulsing_info; 
 }

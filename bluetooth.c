@@ -599,7 +599,7 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         int pulsing_info; 
 
         // strain detection and accelerometer algorithm
-        if(get_automatic_pulsing_state() >= ADDUP_STATE && get_automatic_pulsing_state() <= END_STATE)
+        if(get_automatic_pulsing_state() == ON_STATE)
         { 
             pulsing_info = sensor_detection(channel_0_val, channel_1_val, channel_2_val, 
                                             channel_3_val, channel_4_val, channel_5_val); 

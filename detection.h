@@ -14,10 +14,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
 typedef enum Pulsing_Status 
 {
     OFF_STATE = 0, 
-    ADDUP_STATE = 1,
-    AVERAGING_STATE = 2,
-    SIGN_STATE = 2,
-    END_STATE = 3 
+    ON_STATE = 1
 }Pulsing_Status_t;
 
 
