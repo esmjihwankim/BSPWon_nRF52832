@@ -20,9 +20,9 @@ int get_automatic_pulsing_state(void)
     return automatic_pulsing_setting(-1); 
 }
 
-void set_automatic_pulsing_state(int value)
+void set_automatic_pulsing_state(Pulsing_Status_t input)
 {
-    automatic_pulsing_setting(value); 
+    automatic_pulsing_setting(input); 
 }
 
 
@@ -260,7 +260,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         state_avg_range_y = true;
         state_avg_range_z = true;
 
-        automatic_pulsing_setting(OFF_STATE);
+        set_automatic_pulsing_state(OFF_STATE);
     }
 
     timestamp++;

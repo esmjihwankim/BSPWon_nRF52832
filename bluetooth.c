@@ -1,10 +1,6 @@
 #include "bluetooth.h"
 
 
-BLE_NUS_DEF(m_nus, NRF_SDH_BLE_TOTAL_LINK_COUNT);                                   /**< BLE NUS service instance. */
-NRF_BLE_GATT_DEF(m_gatt);                                                           /**< GATT module instance. */
-NRF_BLE_QWR_DEF(m_qwr);                                                             /**< Context for the Queued Write module.*/
-
 static uint16_t   m_conn_handle          = BLE_CONN_HANDLE_INVALID;                 /**< Handle of the current connection. */
 static uint16_t   m_ble_nus_max_data_len = BLE_GATT_ATT_MTU_DEFAULT - 3;            /**< Maximum length of data (in bytes) that can be transmitted to the peer by the Nordic UART service module. */
 static ble_uuid_t m_adv_uuids[]          =                                          /**< Universally unique service identifier. */
@@ -606,11 +602,10 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         }
        
         // Send data over BLE via NUS service. Create string from samples and send string with correct length.        
+        // Data is to be sent over the data channel
         uint8_t nus_string[50];
-
-        
         bytes_to_send = sprintf(nus_string, 
-                                " %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r",
+                                "D: %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r",
                                 channel_0_val,
                                 channel_1_val,
                                 channel_2_val,
@@ -626,6 +621,22 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         }
 
         m_adc_evt_counter++;
+    }
+}
+
+void send_log(char* message)
+{
+    ret_code_t err_code;
+    uint8_t nus_string[50];
+    uint16_t bytes_to_send;
+    
+    char log_message[50] = "L:";
+    bytes_to_send = sprintf(nus_string, "%s%s", log_message, message);
+
+    err_code = ble_nus_data_send(&m_nus, nus_string, &bytes_to_send, m_conn_handle);
+    if ((err_code != NRF_ERROR_INVALID_STATE) && (err_code != NRF_ERROR_NOT_FOUND))
+    {
+        APP_ERROR_CHECK(err_code);
     }
 }
 
