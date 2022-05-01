@@ -59,6 +59,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
     if(timestamp == 0)
     {
         printf("addup state entered::stay still\n\r"); 
+        send_log_via_bluetooth("stay still");
     }
     // Average Calculation 
     else if(timestamp < 100)
@@ -73,6 +74,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
     else if(timestamp == 100) 
     {
         printf("gesture state entered::perform gesture\n\r");
+        send_log_via_bluetooth("perform gesture");
         u_avg /= 100; 
         v_avg /= 100; 
         w_avg /= 100; 
@@ -244,6 +246,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
     else // initialize 
     {
         printf("AUTOMATIC PULSING PERIOD FINISHED\n\r");
+        send_log_via_bluetooth("done. ready.");
         timestamp = 0; 
         u_avg = 0;
         v_avg = 0; 

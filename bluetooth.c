@@ -624,7 +624,7 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
     }
 }
 
-void send_log(char* message)
+void send_log_via_bluetooth(char* message)
 {
     ret_code_t err_code;
     uint8_t nus_string[50];

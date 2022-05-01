@@ -85,5 +85,6 @@ void advertising_start(void);
 void saadc_init(void);
 void advertising_init(void);
 
+void send_log_via_bluetooth(char* message); 
 
 #endif
