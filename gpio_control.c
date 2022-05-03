@@ -158,7 +158,7 @@ void led_cascade_on(void)
     printf("FUNC LED CASCADE ON\r\n");
     if (app_timer_cnt_get() == 0)
     {    
-        app_timer_start(m_cascade_app_timer_id, CASCADE_INTERVAL, NULL);  // initialize the timer
+        app_timer_start(m_cascade_app_timer_id, CASCADE_INTERVAL, NULL); 
     }
 }
 

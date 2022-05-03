@@ -605,7 +605,7 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         // Data is to be sent over the data channel
         uint8_t nus_string[50];
         bytes_to_send = sprintf(nus_string, 
-                                "D: %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r %d\n\r",
+                                "D: %d. %d. %d. %d. %d. %d. %d.",
                                 channel_0_val,
                                 channel_1_val,
                                 channel_2_val,
@@ -632,7 +632,23 @@ void send_log_via_bluetooth(char* message)
     
     char log_message[50] = "L:";
     bytes_to_send = sprintf(nus_string, "%s%s", log_message, message);
+    printf("DATA SENT VIA BLE:::%s\n\r", nus_string);
+    err_code = ble_nus_data_send(&m_nus, nus_string, &bytes_to_send, m_conn_handle);
+    if ((err_code != NRF_ERROR_INVALID_STATE) && (err_code != NRF_ERROR_NOT_FOUND))
+    {
+        APP_ERROR_CHECK(err_code);
+    }
+}
 
+void send_state_via_bluetooth(char* state)
+{
+    ret_code_t err_code;
+    uint8_t nus_string[50];
+    uint16_t bytes_to_send;
+    
+    char state_message[50] = "S:";
+    bytes_to_send = sprintf(nus_string, "%s%s", state_message, state);
+    printf("DATA SENT VIA BLE:::%s\n\r", nus_string);
     err_code = ble_nus_data_send(&m_nus, nus_string, &bytes_to_send, m_conn_handle);
     if ((err_code != NRF_ERROR_INVALID_STATE) && (err_code != NRF_ERROR_NOT_FOUND))
     {

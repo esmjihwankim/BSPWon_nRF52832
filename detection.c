@@ -247,6 +247,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
     {
         printf("AUTOMATIC PULSING PERIOD FINISHED\n\r");
         send_log_via_bluetooth("done. ready.");
+        send_state_via_bluetooth("NMPD");
         timestamp = 0; 
         u_avg = 0;
         v_avg = 0; 
