@@ -37,8 +37,8 @@ void set_automatic_pulsing_state(Pulsing_Status_t input)
  */ 
 int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int z_val)
 {
-    const int resting_time = 60; 
-    const int sign_time = 100;
+    const int resting_time = 20; 
+    const int sign_time = 30;
     const int avg_deviation_range_strain = 300;
     const int avg_deviation_range_acc = 300;
 
@@ -54,7 +54,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
     static int u_avg = 0, v_avg = 0, w_avg = 0, 
                x_avg = 0, y_avg = 0, z_avg = 0; 
 
-    int32_t pulsing_info = 0x00; 
+    static int32_t pulsing_info = 0x00; 
     
     if(timestamp == 0)
     {
@@ -62,7 +62,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         send_log_via_bluetooth("stay still");
     }
     // Average Calculation 
-    else if(timestamp < 100)
+    else if(timestamp < resting_time)
     {
         u_avg += u_val; 
         v_avg += v_val; 
@@ -71,7 +71,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         y_avg += y_val; 
         z_avg += z_val;
     }
-    else if(timestamp == 100) 
+    else if(timestamp == resting_time) 
     {
         printf("gesture state entered::perform gesture\n\r");
         send_log_via_bluetooth("perform gesture");
@@ -82,7 +82,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         y_avg /= 100; 
         z_avg /= 100; 
     }
-    else if(timestamp >= 100 && timestamp <= 300)
+    else if(timestamp >= resting_time && timestamp <= resting_time+sign_time)
     {
         // u strain 
         if(u_val <= u_avg + avg_deviation_range_strain)
@@ -91,7 +91,6 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
             {
                 state_straight_u = true; 
                 printf("pulse_straight\n\r"); 
-                give_pulse(1);
                 pulsing_info += 0b100000000000; 
             }
         }
@@ -101,7 +100,6 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
             {
                 state_straight_u = false; 
                 printf("pulse_bent\n\r"); 
-                give_pulse(2);
                 pulsing_info += 0b010000000000;
 
             }
@@ -114,7 +112,6 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
             {
                 state_straight_v = true; 
                 printf("v_pulse_straight\n\r"); 
-                give_pulse(3);
                 pulsing_info += 0b001000000000;
 
             }
@@ -125,7 +122,6 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
             {
                 state_straight_v = false; 
                 printf("v_pulse_bent\n\r"); 
-                give_pulse(4);
                 pulsing_info += 0b000100000000;
             }
         }
@@ -137,7 +133,6 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
             {
                 state_straight_w = true; 
                 printf("w_pulse_straight\n\r");
-                give_pulse(5);
                 pulsing_info += 0b000010000000;
 
             }
@@ -148,7 +143,6 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
             {
                 state_straight_w = false; 
                 printf("w_pulse_bent\n\r");
-                give_pulse(6); 
                 pulsing_info += 0b000001000000;
             }
         }
@@ -170,13 +164,11 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
                 int derivative_x = x_val - x_avg; 
                 if(derivative_x < 0) 
                 { 
-                    give_pulse(7);
                     printf("acc_x_negative_pulse\n\r");   // negative pulse 
                     pulsing_info += 0b000000100000; 
                 }
                 else if(derivative_x > 0) 
                 {
-                    give_pulse(8);
                     printf("acc_x_positive_pulse\n\r");   // positive pulse
                     pulsing_info += 0b000000010000; 
                 }
@@ -200,13 +192,11 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
                 int derivative_y = y_val - y_avg; 
                 if(derivative_y < 0) 
                 {
-                    give_pulse(9);
                     printf("acc_y_negative_pulse\n\r");   // negative pulse 
                     pulsing_info += 0b000000001000; 
                 }
                 else if(derivative_y > 0)
                 {
-                    give_pulse(10);
                     printf("acc_y_positive_pulse\n\r");   // positive pulse 
                     pulsing_info += 0b000000000100;
                 }
@@ -230,13 +220,11 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
                 int derivative_z = z_val - z_avg; 
                 if(derivative_z < 0) 
                 {
-                    give_pulse(11);
                     printf("acc_z_negative_pulse\n\r"); // negative pulse 
                     pulsing_info += 0b000000000010; 
                 }
                 else if(derivative_z > 0)
                 { 
-                    give_pulse(12);
                     printf("acc_z_positive_pulse\n\r");  // positive pulse
                     pulsing_info += 0b000000000001; 
                 }
@@ -265,11 +253,13 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         state_avg_range_z = true;
 
         set_automatic_pulsing_state(OFF_STATE);
+        //TODO: Give pulses out at the end of gesture phase
+        return pulsing_info;
     }
 
     timestamp++;
     if(pulsing_info != 0) printf("%d\n\r", pulsing_info); 
-    return pulsing_info; 
+    return 0; 
 }
 
 
