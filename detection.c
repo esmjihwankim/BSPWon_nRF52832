@@ -253,12 +253,14 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         state_avg_range_z = true;
 
         set_automatic_pulsing_state(OFF_STATE);
-        //TODO: Give pulses out at the end of gesture phase
-        return pulsing_info;
+        
+        int32_t result = pulsing_info;
+        pulsing_info = 0;
+        printf("%d\n\r", result); 
+        return result;
     }
 
     timestamp++;
-    if(pulsing_info != 0) printf("%d\n\r", pulsing_info); 
     return 0; 
 }
 
