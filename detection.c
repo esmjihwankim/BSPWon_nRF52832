@@ -37,10 +37,10 @@ void set_automatic_pulsing_state(Pulsing_Status_t input)
  */ 
 int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int z_val)
 {
-    const int resting_time = 20; 
-    const int sign_time = 30;
-    const int avg_deviation_range_strain = 300;
-    const int avg_deviation_range_acc = 300;
+    const int resting_time = 30; 
+    const int sign_time = 60; 
+    const int avg_deviation_range_strain = 500;
+    const int avg_deviation_range_acc = 500;
 
     static bool state_straight_u = true;
     static bool state_straight_v = true;
@@ -54,7 +54,8 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
     static int u_avg = 0, v_avg = 0, w_avg = 0, 
                x_avg = 0, y_avg = 0, z_avg = 0; 
 
-    static int32_t pulsing_info = 0x00; 
+    int32_t pulsing_info = 0x00; 
+    static int32_t result = 0x00; 
     
     if(timestamp == 0)
     {
@@ -75,12 +76,12 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
     {
         printf("gesture state entered::perform gesture\n\r");
         send_log_via_bluetooth("perform gesture");
-        u_avg /= 100; 
-        v_avg /= 100; 
-        w_avg /= 100; 
-        x_avg /= 100; 
-        y_avg /= 100; 
-        z_avg /= 100; 
+        u_avg /= resting_time; 
+        v_avg /= resting_time; 
+        w_avg /= resting_time; 
+        x_avg /= resting_time; 
+        y_avg /= resting_time; 
+        z_avg /= resting_time; 
     }
     else if(timestamp >= resting_time && timestamp <= resting_time+sign_time)
     {
@@ -243,7 +244,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         x_avg = 0;
         y_avg = 0;
         z_avg = 0;
-
+          
         state_straight_u = true;
         state_straight_v = true;
         state_straight_w = true;
@@ -253,15 +254,19 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         state_avg_range_z = true;
 
         set_automatic_pulsing_state(OFF_STATE);
+        int32_t output = result; 
+        result = 0;
+        // produce pulses 
+        // TODO: generate multi-channel pulses simultaneously based on the pulsing_info data
         
-        int32_t result = pulsing_info;
-        pulsing_info = 0;
-        printf("%d\n\r", result); 
-        return result;
+        
+        /*********************/ 
+        return output;
     }
 
     timestamp++;
-    return 0; 
+    result = result | pulsing_info;
+    return pulsing_info; 
 }
 
 
