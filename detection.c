@@ -50,13 +50,15 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
     static bool state_avg_range_y = true;
     static bool state_avg_range_z = true;
     
-    static int timestamp = 0;
+    static int timestamp = -1;
     static int u_avg = 0, v_avg = 0, w_avg = 0, 
                x_avg = 0, y_avg = 0, z_avg = 0; 
 
     int32_t pulsing_info = 0x00; 
     static int32_t result = 0x00; 
     
+    timestamp++;
+
     if(timestamp == 0)
     {
         printf("addup state entered::stay still\n\r"); 
@@ -83,7 +85,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         y_avg /= resting_time; 
         z_avg /= resting_time; 
     }
-    else if(timestamp >= resting_time && timestamp <= resting_time+sign_time)
+    else if(timestamp >= resting_time && timestamp < resting_time+sign_time)
     {
         // u strain 
         if(u_val <= u_avg + avg_deviation_range_strain)
@@ -232,39 +234,41 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
             }
         }
     }
-    else // initialize 
+    else if(timestamp == resting_time+sign_time)
     {
-        printf("AUTOMATIC PULSING PERIOD FINISHED\n\r");
-        send_log_via_bluetooth("done. ready.");
-        send_state_via_bluetooth("NMPD");
-        timestamp = 0; 
-        u_avg = 0;
-        v_avg = 0; 
-        w_avg = 0; 
-        x_avg = 0;
-        y_avg = 0;
-        z_avg = 0;
-          
-        state_straight_u = true;
-        state_straight_v = true;
-        state_straight_w = true;
-
-        state_avg_range_x = true;
-        state_avg_range_y = true;
-        state_avg_range_z = true;
-
-        set_automatic_pulsing_state(OFF_STATE);
-        int32_t output = result; 
-        result = 0;
-        // produce pulses 
+        printf("GESTURE TIME LIMIT EXCEEDED\n\r");
+        int32_t output = result;
         // TODO: generate multi-channel pulses simultaneously based on the pulsing_info data
         
         
         /*********************/ 
         return output;
     }
-
-    timestamp++;
+    else // initialize 
+    {
+        printf("AUTOMATIC PULSING PERIOD FINISHED\n\r");
+        send_log_via_bluetooth("done. ready.");
+        send_state_via_bluetooth("NMPD");
+        timestamp = -1; 
+        u_avg = 0;
+        v_avg = 0; 
+        w_avg = 0; 
+        x_avg = 0;
+        y_avg = 0;
+        z_avg = 0;
+        
+        state_straight_u = true;
+        state_straight_v = true;
+        state_straight_w = true;
+        
+        state_avg_range_x = true;
+        state_avg_range_y = true;
+        state_avg_range_z = true;
+        
+        result = 0;
+        set_automatic_pulsing_state(OFF_STATE);
+    }
+    
     result = result | pulsing_info;
     return pulsing_info; 
 }
