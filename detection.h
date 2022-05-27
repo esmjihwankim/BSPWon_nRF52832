@@ -14,11 +14,10 @@ typedef enum Pulsing_Status
 }Pulsing_Status_t;
 
 
+
 int get_automatic_pulsing_state(void);
 void set_automatic_pulsing_state(Pulsing_Status_t input);
 
 int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int z_val); 
-
-
 
 #endif

@@ -1,6 +1,5 @@
 #include "gpio_control.h"
 
-
 void gpio_init(void)
 {   
 
@@ -119,7 +118,6 @@ void lfclk_config(void)
 {
   ret_code_t err_code = nrf_drv_clock_init();
   APP_ERROR_CHECK(err_code);
-
   nrf_drv_clock_lfclk_request(NULL);
 }
 
@@ -184,137 +182,23 @@ void led_cascade_off(void)
 
 /*@brief Pulse Handler
 Single pulse -> using single shot mode in application timer 
+clearing logic should also employ SIMD
 */ 
-static void app_pulse_1_timer_handler(void * p_context)
-{  
-    nrf_gpio_pin_clear(PULSE_PIN_1);    
-}
-
-static void app_pulse_2_timer_handler(void * p_context)
-{  
-    nrf_gpio_pin_clear(PULSE_PIN_2);    
-}
-
-static void app_pulse_3_timer_handler(void * p_context)
-{  
-    nrf_gpio_pin_clear(PULSE_PIN_3);    
-}
-
-static void app_pulse_4_timer_handler(void * p_context)
-{  
-    nrf_gpio_pin_clear(PULSE_PIN_4);    
-}
-
-static void app_pulse_5_timer_handler(void * p_context)
-{  
-    nrf_gpio_pin_clear(PULSE_PIN_5);    
-}
-
-static void app_pulse_6_timer_handler(void * p_context)
-{  
-    nrf_gpio_pin_clear(PULSE_PIN_6);    
-}
-
-static void app_pulse_7_timer_handler(void * p_context)
-{  
-    nrf_gpio_pin_clear(PULSE_PIN_7);    
-}
-
-static void app_pulse_8_timer_handler(void * p_context)
-{  
-    nrf_gpio_pin_clear(PULSE_PIN_8);    
-}
-
-static void app_pulse_9_timer_handler(void * p_context)
-{  
-    nrf_gpio_pin_clear(PULSE_PIN_9);    
-}
-
-static void app_pulse_10_timer_handler(void * p_context)
-{  
-    nrf_gpio_pin_clear(PULSE_PIN_10);    
-}
-
-static void app_pulse_11_timer_handler(void * p_context)
-{  
-    nrf_gpio_pin_clear(PULSE_PIN_11);    
-}
-
-static void app_pulse_12_timer_handler(void * p_context)
-{  
-    nrf_gpio_pin_clear(PULSE_PIN_12);    
+static void app_pulse_timer_handler(void * p_context)
+{
+      // TODO: select all pins turns on and turn them off
 }
 
 
 /*@brief interface for pulsing 
 */
-void give_pulse(int pin_number)
+void give_pulse(int32_t detection_output_simd)
 {
       ret_code_t err_code; 
-
-      switch(pin_number)
-      {
-      case 1: 
-        nrf_gpio_pin_set(PULSE_PIN_1); 
-        err_code = app_timer_start(m_pulsing_ch1_timer_id, PULSE_INTERVAL, NULL);    
-        APP_ERROR_CHECK(err_code);
-        break;
-      case 2: 
-        nrf_gpio_pin_set(PULSE_PIN_2); 
-        err_code = app_timer_start(m_pulsing_ch2_timer_id, PULSE_INTERVAL, NULL);    
-        APP_ERROR_CHECK(err_code);
-        break;
-      case 3:
-        nrf_gpio_pin_set(PULSE_PIN_3); 
-        err_code = app_timer_start(m_pulsing_ch3_timer_id, PULSE_INTERVAL, NULL);    
-        APP_ERROR_CHECK(err_code);
-        break;
-      case 4:
-        nrf_gpio_pin_set(PULSE_PIN_4); 
-        err_code = app_timer_start(m_pulsing_ch4_timer_id, PULSE_INTERVAL, NULL);    
-        APP_ERROR_CHECK(err_code);
-        break;
-      case 5: 
-        nrf_gpio_pin_set(PULSE_PIN_5); 
-        err_code = app_timer_start(m_pulsing_ch5_timer_id, PULSE_INTERVAL, NULL);    
-        APP_ERROR_CHECK(err_code);
-        break; 
-      case 6:
-        nrf_gpio_pin_set(PULSE_PIN_6); 
-        err_code = app_timer_start(m_pulsing_ch6_timer_id, PULSE_INTERVAL, NULL);    
-        APP_ERROR_CHECK(err_code); 
-        break;
-      case 7:
-        nrf_gpio_pin_set(PULSE_PIN_7); 
-        err_code = app_timer_start(m_pulsing_ch7_timer_id, PULSE_INTERVAL, NULL);    
-        APP_ERROR_CHECK(err_code);
-        break;
-      case 8: 
-        nrf_gpio_pin_set(PULSE_PIN_8); 
-        err_code = app_timer_start(m_pulsing_ch8_timer_id, PULSE_INTERVAL, NULL);    
-        APP_ERROR_CHECK(err_code);
-        break;
-      case 9:
-        nrf_gpio_pin_set(PULSE_PIN_9); 
-        err_code = app_timer_start(m_pulsing_ch9_timer_id, PULSE_INTERVAL, NULL);    
-        APP_ERROR_CHECK(err_code);
-        break;
-      case 10:
-        nrf_gpio_pin_set(PULSE_PIN_10); 
-        err_code = app_timer_start(m_pulsing_ch10_timer_id, PULSE_INTERVAL, NULL);    
-        APP_ERROR_CHECK(err_code);
-        break;
-      case 11:
-        nrf_gpio_pin_set(PULSE_PIN_11); 
-        err_code = app_timer_start(m_pulsing_ch11_timer_id, PULSE_INTERVAL, NULL);    
-        APP_ERROR_CHECK(err_code);
-        break;
-      case 12:
-        nrf_gpio_pin_set(PULSE_PIN_12); 
-        err_code = app_timer_start(m_pulsing_ch12_timer_id, PULSE_INTERVAL, NULL);    
-        APP_ERROR_CHECK(err_code);
-        break;
-      }    
+      NRF_GPIO -> OUTSET = detection_output_simd;
+      int32_t tmp_detection_result_simd = detection_output_simd;
+      err_code = app_timer_start(m_pulsing_timer_id, PULSE_INTERVAL, NULL);    
+      APP_ERROR_CHECK(err_code);
 }
 
 
@@ -324,20 +208,7 @@ void timers_init(void)
     APP_ERROR_CHECK(err_code);
 
     err_code = app_timer_create(&m_cascade_app_timer_id, APP_TIMER_MODE_REPEATED, cascade_timer_handler);
-
-    err_code = app_timer_create(&m_pulsing_ch1_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_1_timer_handler); 
-    err_code = app_timer_create(&m_pulsing_ch2_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_2_timer_handler); 
-    err_code = app_timer_create(&m_pulsing_ch3_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_3_timer_handler); 
-    err_code = app_timer_create(&m_pulsing_ch4_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_4_timer_handler); 
-    err_code = app_timer_create(&m_pulsing_ch5_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_5_timer_handler); 
-    err_code = app_timer_create(&m_pulsing_ch6_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_6_timer_handler); 
-    err_code = app_timer_create(&m_pulsing_ch7_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_7_timer_handler); 
-    err_code = app_timer_create(&m_pulsing_ch8_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_8_timer_handler); 
-    err_code = app_timer_create(&m_pulsing_ch9_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_9_timer_handler); 
-    err_code = app_timer_create(&m_pulsing_ch10_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_10_timer_handler); 
-    err_code = app_timer_create(&m_pulsing_ch11_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_11_timer_handler); 
-    err_code = app_timer_create(&m_pulsing_ch12_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_12_timer_handler); 
-    APP_ERROR_CHECK(err_code);
+    err_code = app_timer_create(&m_pulsing_timer_id, APP_TIMER_MODE_SINGLE_SHOT, app_pulse_timer_handler); 
 }
 
 

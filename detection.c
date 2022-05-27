@@ -1,9 +1,5 @@
 #include "detection.h"
 
-/* @brief Interface to change the setting
-*/ 
-
-
 /**@brief Interface for modifying & checking pulsing state 
   *pulsing states should be accessed only by get/set functions
   */
@@ -34,6 +30,20 @@ void set_automatic_pulsing_state(Pulsing_Status_t input)
  *      x_val : accelerometer x axis 
  *      y_val : accelerometer y axis 
  *      z_val : accelerometer z axis 
+
+ *       PULSE_PIN_1 4       // U Strain : Index Straight
+ *       PULSE_PIN_2 5       // U Strain : Index Bent 
+ *       PULSE_PIN_3 7       // V Strain : Middle Striaght 
+ *       PULSE_PIN_4 9       // V Strain : Middle Bent 
+ *       PULSE_PIN_5 11      // W Strain : Ring Straight
+ *       PULSE_PIN_6 12      // W Strain : Ring Bent 
+ *       PULSE_PIN_7 13      // Acc X Positive Swing 
+ *       PULSE_PIN_8 14      // Acc X Negative Swing 
+ *       PULSE_PIN_9 15      // Acc Y Positive Swing 
+ *       PULSE_PIN_10 22     // Acc Y Negative Swing 
+ *       PULSE_PIN_11 23     // Acc Z Positive Swing 
+ *       PULSE_PIN_12 24     // Acc Z Negative Swing 
+
  */ 
 int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int z_val)
 {
@@ -56,11 +66,13 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
 
     int32_t pulsing_info = 0x00; 
     static int32_t result = 0x00; 
+    static int32_t detection_result_simd = 0;
     
     timestamp++;
 
     if(timestamp == 0)
     {
+        int32_t detection_result_simd = 0;
         printf("addup state entered::stay still\n\r"); 
         send_log_via_bluetooth("stay still");
     }
@@ -87,7 +99,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
     }
     else if(timestamp >= resting_time && timestamp < resting_time+sign_time)
     {
-        // u strain 
+        // u strain sensor: 
         if(u_val <= u_avg + avg_deviation_range_strain)
         {
             if(state_straight_u == false)
@@ -95,8 +107,10 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
                 state_straight_u = true; 
                 printf("pulse_straight\n\r"); 
                 pulsing_info += 0b100000000000; 
+                detection_result_simd |= 1UL << PULSE_PIN_1;
             }
         }
+        // u strain sensor: 
         else 
         {
             if(state_straight_u == true) 
@@ -104,11 +118,11 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
                 state_straight_u = false; 
                 printf("pulse_bent\n\r"); 
                 pulsing_info += 0b010000000000;
-
+                detection_result_simd |= 1UL << PULSE_PIN_2;
             }
         }
 
-        // v strain 
+        // v strain sensor
         if(v_val <= v_avg + avg_deviation_range_strain)
         {
             if(state_straight_v == false)
@@ -116,9 +130,10 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
                 state_straight_v = true; 
                 printf("v_pulse_straight\n\r"); 
                 pulsing_info += 0b001000000000;
-
+                detection_result_simd |= 1UL << PULSE_PIN_3;
             }
         }
+        // v strain sensor
         else
         {
             if(state_straight_v == true) 
@@ -126,10 +141,11 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
                 state_straight_v = false; 
                 printf("v_pulse_bent\n\r"); 
                 pulsing_info += 0b000100000000;
+                detection_result_simd |= 1UL << PULSE_PIN_4;
             }
         }
 
-        // w strain : ring finger
+        // w strain sensor: 
         if(w_val <= w_avg + avg_deviation_range_strain)
         {
             if(state_straight_w == false)
@@ -137,7 +153,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
                 state_straight_w = true; 
                 printf("w_pulse_straight\n\r");
                 pulsing_info += 0b000010000000;
-
+                detection_result_simd |= 1UL << PULSE_PIN_5;
             }
         }
         else 
@@ -147,6 +163,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
                 state_straight_w = false; 
                 printf("w_pulse_bent\n\r");
                 pulsing_info += 0b000001000000;
+                detection_result_simd |= 1UL << PULSE_PIN_6;
             }
         }
 
@@ -169,11 +186,13 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
                 { 
                     printf("acc_x_negative_pulse\n\r");   // negative pulse 
                     pulsing_info += 0b000000100000; 
+                    detection_result_simd |= 1UL << PULSE_PIN_7;
                 }
                 else if(derivative_x > 0) 
                 {
                     printf("acc_x_positive_pulse\n\r");   // positive pulse
                     pulsing_info += 0b000000010000; 
+                    detection_result_simd |= 1UL << PULSE_PIN_8;
                 }
             }
         }
@@ -196,12 +215,14 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
                 if(derivative_y < 0) 
                 {
                     printf("acc_y_negative_pulse\n\r");   // negative pulse 
-                    pulsing_info += 0b000000001000; 
+                    pulsing_info += 0b000000001000; \
+                    detection_result_simd |= 1UL << PULSE_PIN_9;
                 }
                 else if(derivative_y > 0)
                 {
                     printf("acc_y_positive_pulse\n\r");   // positive pulse 
                     pulsing_info += 0b000000000100;
+                    detection_result_simd |= 1UL << PULSE_PIN_10;
                 }
             }
         }
@@ -225,11 +246,13 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
                 {
                     printf("acc_z_negative_pulse\n\r"); // negative pulse 
                     pulsing_info += 0b000000000010; 
+                    detection_result_simd |= 1UL << PULSE_PIN_11;
                 }
                 else if(derivative_z > 0)
                 { 
                     printf("acc_z_positive_pulse\n\r");  // positive pulse
-                    pulsing_info += 0b000000000001; 
+                    pulsing_info += 0b000000000001;
+                    detection_result_simd |= 1UL << PULSE_PIN_12; 
                 }
             }
         }
@@ -238,10 +261,9 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
     {
         printf("GESTURE TIME LIMIT EXCEEDED\n\r");
         int32_t output = result;
-        // TODO: generate multi-channel pulses simultaneously based on the pulsing_info data
-        
-        
-        /*********************/ 
+        // generate multi-channel pulses simultaneously based on the pulsing_info data
+        NRF_GPIO->OUTSET = detection_result_simd;
+
         return output;
     }
     else // initialize 
