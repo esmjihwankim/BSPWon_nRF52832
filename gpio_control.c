@@ -1,5 +1,7 @@
 #include "gpio_control.h"
 
+int32_t tmp_detection_output_simd;
+
 void gpio_init(void)
 {   
 
@@ -186,7 +188,10 @@ clearing logic should also employ SIMD
 */ 
 static void app_pulse_timer_handler(void * p_context)
 {
-      // TODO: select all pins turns on and turn them off
+      printf("FUNC:::app_pulse_timer_handler\n\r");
+      // select all pins turns on and turn them off
+      int32_t output_simd_inverted = ~tmp_detection_output_simd;
+      NRF_GPIO->OUTCLR = tmp_detection_output_simd;
 }
 
 
@@ -194,9 +199,12 @@ static void app_pulse_timer_handler(void * p_context)
 */
 void give_pulse(int32_t detection_output_simd)
 {
-      ret_code_t err_code; 
+      printf("FUNC:::give_pulse\n\r");
+      // turn on the pins simultaneously
+      ret_code_t err_code;
+      tmp_detection_output_simd = detection_output_simd;
       NRF_GPIO -> OUTSET = detection_output_simd;
-      int32_t tmp_detection_result_simd = detection_output_simd;
+      // start timer to turn off the pins just turned on
       err_code = app_timer_start(m_pulsing_timer_id, PULSE_INTERVAL, NULL);    
       APP_ERROR_CHECK(err_code);
 }

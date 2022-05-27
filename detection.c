@@ -262,8 +262,7 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
         printf("GESTURE TIME LIMIT EXCEEDED\n\r");
         int32_t output = result;
         // generate multi-channel pulses simultaneously based on the pulsing_info data
-        NRF_GPIO->OUTSET = detection_result_simd;
-
+        give_pulse(detection_result_simd);
         return output;
     }
     else // initialize 
