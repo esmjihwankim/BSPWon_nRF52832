@@ -49,8 +49,8 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
 {
     const int resting_time = 30; 
     const int sign_time = 60; 
-    const int avg_deviation_range_strain = 500;
-    const int avg_deviation_range_acc = 500;
+    const int avg_deviation_range_strain = 350;
+    const int avg_deviation_range_acc = 350;
 
     static bool state_straight_u = true;
     static bool state_straight_v = true;

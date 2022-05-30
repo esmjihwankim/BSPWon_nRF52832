@@ -586,12 +586,12 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         }
         */
 
-        register int channel_0_val = p_event->data.done.p_buffer[0];
-        register int channel_1_val = p_event->data.done.p_buffer[1];
-        register int channel_2_val = p_event->data.done.p_buffer[2];
-        register int channel_3_val = p_event->data.done.p_buffer[3];
-        register int channel_4_val = p_event->data.done.p_buffer[4];
-        register int channel_5_val = p_event->data.done.p_buffer[5];
+        register int channel_0_val = p_event->data.done.p_buffer[1];  // u
+        register int channel_1_val = p_event->data.done.p_buffer[0];
+        register int channel_2_val = p_event->data.done.p_buffer[5];
+        register int channel_3_val = p_event->data.done.p_buffer[2];
+        register int channel_4_val = p_event->data.done.p_buffer[3];
+        register int channel_5_val = p_event->data.done.p_buffer[4];
         int pulsing_info; 
 
         // strain detection and accelerometer algorithm
