@@ -90,12 +90,12 @@ int sensor_detection(int u_val, int v_val, int w_val, int x_val, int y_val, int 
     {
         printf("gesture state entered::perform gesture\n\r");
         send_log_via_bluetooth("perform gesture");
-        u_avg /= resting_time; 
-        v_avg /= resting_time; 
-        w_avg /= resting_time; 
-        x_avg /= resting_time; 
-        y_avg /= resting_time; 
-        z_avg /= resting_time; 
+        u_avg /= (resting_time-1); 
+        v_avg /= (resting_time-1); 
+        w_avg /= (resting_time-1); 
+        x_avg /= (resting_time-1); 
+        y_avg /= (resting_time-1); 
+        z_avg /= (resting_time-1); 
     }
     else if(timestamp >= resting_time && timestamp < resting_time+sign_time)
     {

@@ -9,10 +9,12 @@ int main(void)
 
     bool erase_bonds;
 
-    // Initialize.
+    log_init();
+    err_code = ble_dfu_buttonless_async_svci_init();
+    APP_ERROR_CHECK(err_code);
+
     gpio_init();
     uart_init();
-    log_init();
     lfclk_config();
     timers_init();
     //buttons_leds_init(&erase_bonds);
