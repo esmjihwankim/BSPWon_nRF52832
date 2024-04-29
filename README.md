@@ -61,13 +61,6 @@ P0.12 :: Control Pin 2<br/>
 P0.13 :: Control Pin 3<br/>
 P0.14 :: Control Pin 4<br/>
 
-> #### Cascade Action Pins 
-P0.11 <br/>
-P0.12 <br/>
-P0.13 <br/>  
-P0.14 <br/> 
-P0.15 <br/> 
-
 > #### Input from the Neuromorphic ML Classification result
 P0.16 <br/>
 P0.17 <br/>
