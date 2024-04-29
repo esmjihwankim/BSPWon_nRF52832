@@ -3,7 +3,7 @@ Bio Sensor Platform designed to operate with BSPWon iOS/Android </br>
 @Won Research Group, SKKU </br>
 <img src="sensor.PNG" width="550" height = "350"> </br>
 #####*(BLE chip integrated into circuit along with power source and an accelerometer)* </br>
-Developed by Jihwan Kim, Sang Uk Park, Sang Hoon Lee</br> 
+Developed by Jihwan Kim, Sang Uk Park </br> 
 Photo taken by Hee Kyu Lee, Won Research Group 
 
 ## *Project Overview*
@@ -61,9 +61,4 @@ P0.12 :: Control Pin 2<br/>
 P0.13 :: Control Pin 3<br/>
 P0.14 :: Control Pin 4<br/>
 
-> #### Input from the Neuromorphic ML Classification result
-P0.16 <br/>
-P0.17 <br/>
-P0.18 <br/>  
-P0.19 <br/>
-P0.20 <br/>
+
