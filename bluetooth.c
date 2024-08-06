@@ -1,10 +1,6 @@
 #include "bluetooth.h"
 
-ble_gap_addr_t ble_addr;
-BLE_NUS_DEF(m_nus, NRF_SDH_BLE_TOTAL_LINK_COUNT);                                   /**< BLE NUS service instance. */
-NRF_BLE_GATT_DEF(m_gatt);                                                           /**< GATT module instance. */
-NRF_BLE_QWR_DEF(m_qwr);                                                             /**< Context for the Queued Write module.*/
-static int16_t AccValue[3], GyroValue[3];
+
 static uint16_t   m_conn_handle          = BLE_CONN_HANDLE_INVALID;                 /**< Handle of the current connection. */
 static uint16_t   m_ble_nus_max_data_len = BLE_GATT_ATT_MTU_DEFAULT - 3;            /**< Maximum length of data (in bytes) that can be transmitted to the peer by the Nordic UART service module. */
 static ble_uuid_t m_adv_uuids[]          =                                          /**< Universally unique service identifier. */
@@ -13,230 +9,26 @@ static ble_uuid_t m_adv_uuids[]          =                                      
 };
 
 volatile uint8_t state = 1;
+
 static const nrf_drv_timer_t   m_timer = NRF_DRV_TIMER_INSTANCE(3);
-static nrf_saadc_value_t       m_buffer_pool[4][SAADC_SAMPLES_IN_BUFFER];
+static nrf_saadc_value_t       m_buffer_pool[2][SAADC_SAMPLES_IN_BUFFER];
 static nrf_ppi_channel_t       m_ppi_channel;
 static uint32_t                m_adc_evt_counter;
-static int16_t buff_size = 1;
-uint8_t nus_string[BLE_NUS_BUFFER * 20];
-uint8_t test_notify[20];
-static uint32_t ch1[BLE_NUS_BUFFER];
-static uint32_t ch2[BLE_NUS_BUFFER];
-static uint32_t pulse_ch[BLE_NUS_BUFFER];
-
-
-#define TWI_INSTANCE_ID     0
-static volatile bool m_xfer_done = false;
-static const nrf_drv_twi_t m_twi = NRF_DRV_TWI_INSTANCE(TWI_INSTANCE_ID);
-void twi_handler(nrf_drv_twi_evt_t const * p_event, void * p_context)
-{
-   
-    switch (p_event->type)
-    {
-     
-	case NRF_DRV_TWI_EVT_DONE:
-        m_xfer_done = true;//Set the flag
-        break;
-        
-        default:
-        // do nothing
-          break;
-    }
-}
-
-void twi_master_init(void)
-{
-    ret_code_t err_code;
-
-  
-    const nrf_drv_twi_config_t twi_config = {
-       .scl                = 27,  
-       .sda                = 26,  
-       .frequency          = NRF_DRV_TWI_FREQ_100K, 
-       .interrupt_priority = APP_IRQ_PRIORITY_HIGH, 
-       .clear_bus_init     = false 
-    };
-
-
-   
-    err_code = nrf_drv_twi_init(&m_twi, &twi_config, twi_handler, NULL);
-    APP_ERROR_CHECK(err_code);
-    
-    
-    nrf_drv_twi_enable(&m_twi);
-}
-
-bool mpu6050_register_write(uint8_t register_address, uint8_t value)
-{
-    ret_code_t err_code;
-    uint8_t tx_buf[MPU6050_ADDRESS_LEN+1];
-	
-    tx_buf[0] = register_address;
-    tx_buf[1] = value;
-
-    m_xfer_done = false;
-    
-    err_code = nrf_drv_twi_tx(&m_twi, MPU6050_ADDRESS, tx_buf, MPU6050_ADDRESS_LEN+1, false);
-    
-
-    while (m_xfer_done == false)
-    {
-      }
-
-    if (NRF_SUCCESS != err_code)
-    {
-        return false;
-    }
-    
-    return true;	
-}
-
-
-
-
-
-bool mpu6050_register_read(uint8_t register_address, uint8_t * destination, uint8_t number_of_bytes)
-{
-    ret_code_t err_code;
-
-   
-    m_xfer_done = false;
-    
-    err_code = nrf_drv_twi_tx(&m_twi, MPU6050_ADDRESS, &register_address, 1, true);
-	  
-    while (m_xfer_done == false){}
-    
-    if (NRF_SUCCESS != err_code)
-    {
-        return false;
-    }
-
-    
-    m_xfer_done = false;
-	  
-    err_code = nrf_drv_twi_rx(&m_twi, MPU6050_ADDRESS, destination, number_of_bytes);
-		
-    
-    while (m_xfer_done == false){}
-	
-    // if data was successfully read, return true else return false nigga
-    if (NRF_SUCCESS != err_code)
-    {
-        return false;
-    }
-    
-    return true;
-}
-
-
-
-
-bool mpu6050_verify_product_id(void)
-{
-    uint8_t who_am_i; 
-
-
-    if (mpu6050_register_read(ADDRESS_WHO_AM_I, &who_am_i, 1))
-    {
-        if (who_am_i != MPU6050_WHO_AM_I)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-    else
-    {
-        return false;
-    }
-}
-
-
-/*
-  Function to initialize the mpu6050
-*/ 
-bool mpu6050_init(void)
-{   
-  bool transfer_succeeded = true;
-	
-  transfer_succeeded &= mpu6050_verify_product_id();
-	
-  if(mpu6050_verify_product_id() == false)
-    {
-	return false;
-      }
-
-  (void)mpu6050_register_write(MPU_PWR_MGMT1_REG , 0x00); 
-  (void)mpu6050_register_write(MPU_SAMPLE_RATE_REG , 0x07); 
-  (void)mpu6050_register_write(MPU_CFG_REG , 0x06); 						
-  (void)mpu6050_register_write(MPU_INT_EN_REG, 0x00); 
-  (void)mpu6050_register_write(MPU_GYRO_CFG_REG , 0x18); 
-  (void)mpu6050_register_write(MPU_ACCEL_CFG_REG,0x00);   		
-
-  return transfer_succeeded;
-}
-
-
-bool MPU6050_ReadGyro(int16_t *pGYRO_X , int16_t *pGYRO_Y , int16_t *pGYRO_Z )
-{
-  uint8_t buf[6]; 
-  
-  bool ret = false;	
-	
-  if(mpu6050_register_read(MPU6050_GYRO_OUT,  buf, 6) == true)
-  {
-    *pGYRO_X = (buf[0] << 8) | buf[1];
-    if(*pGYRO_X & 0x8000) *pGYRO_X-=65536;
-		
-    *pGYRO_Y= (buf[2] << 8) | buf[3];
-    if(*pGYRO_Y & 0x8000) *pGYRO_Y-=65536;
-	
-    *pGYRO_Z = (buf[4] << 8) | buf[5];
-    if(*pGYRO_Z & 0x8000) *pGYRO_Z-=65536;
-		
-    ret = true;
-	}
-
-  return ret;
-}	
-
-
-bool MPU6050_ReadAcc( int16_t *pACC_X , int16_t *pACC_Y , int16_t *pACC_Z )
-{
-  uint8_t buf[6];
-  bool ret = false;		
-  
-  if(mpu6050_register_read(MPU6050_ACC_OUT, buf, 6) == true)
-  {
-    mpu6050_register_read(MPU6050_ACC_OUT, buf, 6);
-    
-    *pACC_X = (buf[0] << 8) | buf[1];
-    if(*pACC_X & 0x8000) *pACC_X-=65536;
-
-    *pACC_Y= (buf[2] << 8) | buf[3];
-    if(*pACC_Y & 0x8000) *pACC_Y-=65536;
-
-    *pACC_Z = (buf[4] << 8) | buf[5];
-    if(*pACC_Z & 0x8000) *pACC_Z-=65536;
-		
-    ret = true;
-    }
-  
-  return ret;
-}
-
-
 
 
 void ble_dfu_evt_handler(ble_dfu_buttonless_evt_type_t event);
+
+/**@brief Function for handling events from the BSP module.
+ *
+ * @param[in]   event   Event generated by button press.
+ */
 static void bsp_event_handler(bsp_event_t event)
 {
     uint32_t err_code;
     switch (event)
     {
-        case BSP_EVENT_SLEEP:          
+        case BSP_EVENT_SLEEP:
+            //sleep_mode_enter();
             break;
 
         case BSP_EVENT_DISCONNECT:
@@ -263,6 +55,31 @@ static void bsp_event_handler(bsp_event_t event)
     }
 }
 
+
+
+/**@brief Function for initializing buttons and leds.
+ *
+ * @param[out] p_erase_bonds  Will be true if the clear bonding button was pressed to wake the application up.
+ */
+//void buttons_leds_init(bool * p_erase_bonds)
+//{
+//    bsp_event_t startup_event;
+
+//    uint32_t err_code = bsp_init(BSP_INIT_LEDS | BSP_INIT_BUTTONS, bsp_event_handler);
+//    APP_ERROR_CHECK(err_code);
+
+//    err_code = bsp_btn_ble_init(NULL, &startup_event);
+//    APP_ERROR_CHECK(err_code);
+
+//    *p_erase_bonds = (startup_event == BSP_EVENT_CLEAR_BONDING_DATA);
+//}
+
+
+/**@brief Function for the GAP initialization.
+ *
+ * @details This function will set up all the necessary GAP (Generic Access Profile) parameters of
+ *          the device. It also sets the permissions and appearance.
+ */
 void gap_params_init(void)
 {
     uint32_t                err_code;
@@ -288,18 +105,36 @@ void gap_params_init(void)
 }
 
 
-
+/**@brief Function for handling Queued Write Module errors.
+ *
+ * @details A pointer to this function will be passed to each service which may need to inform the
+ *          application about an error.
+ *
+ * @param[in]   nrf_error   Error code containing information about what went wrong.
+ */
 static void nrf_qwr_error_handler(uint32_t nrf_error)
 {
     APP_ERROR_HANDLER(nrf_error);
 }
 
 
+/**@brief Function for handling the data from the Nordic UART Service.
+ *
+ * @details This function will process the data received from the Nordic UART BLE Service and send
+ *          it to the UART module.
+ *
+ * @param[in] p_evt       Nordic UART Service event.
+ */
+/**@snippet [Handling the data received over BLE] */
 static void nus_data_handler(ble_nus_evt_t * p_evt)
 {
-    //control_table(p_evt);
+    control_table(p_evt);
 }
+/**@snippet [Handling the data received over BLE] */
 
+
+/**@brief Function for initializing services that will be used by the application.
+ */
 void services_init(void)
 {
     uint32_t           err_code;
@@ -307,7 +142,6 @@ void services_init(void)
     nrf_ble_qwr_init_t qwr_init = {0};
     ble_dfu_buttonless_init_t dfus_init = {0};
 
-   
     // Initialize Queued Write Module.
     qwr_init.error_handler = nrf_qwr_error_handler;
 
@@ -329,7 +163,17 @@ void services_init(void)
 }
 
 
-
+/**@brief Function for handling an event from the Connection Parameters Module.
+ *
+ * @details This function will be called for all events in the Connection Parameters Module
+ *          which are passed to the application.
+ *
+ * @note All this function does is to disconnect. This could have been done by simply setting
+ *       the disconnect_on_fail config parameter, but instead we use the event handler
+ *       mechanism to demonstrate its use.
+ *
+ * @param[in] p_evt  Event received from the Connection Parameters Module.
+ */
 static void on_conn_params_evt(ble_conn_params_evt_t * p_evt)
 {
     uint32_t err_code;
@@ -342,7 +186,10 @@ static void on_conn_params_evt(ble_conn_params_evt_t * p_evt)
 }
 
 
-
+/**@brief Function for handling errors from the Connection Parameters module.
+ *
+ * @param[in] nrf_error  Error code containing information about what went wrong.
+ */
 static void conn_params_error_handler(uint32_t nrf_error)
 {
     APP_ERROR_HANDLER(nrf_error);
@@ -370,20 +217,14 @@ void conn_params_init(void)
     err_code = ble_conn_params_init(&cp_init);
     APP_ERROR_CHECK(err_code);
 }
-static void sleep_mode_enter(void)
-{
-    uint32_t err_code = bsp_indication_set(BSP_INDICATE_IDLE);
-    APP_ERROR_CHECK(err_code);
 
-    // Prepare wakeup buttons.
-    err_code = bsp_btn_ble_sleep_mode_prepare();
-    APP_ERROR_CHECK(err_code);
 
-    // Go to system-off mode (this function will not return; wakeup will cause a reset).
-    err_code = sd_power_system_off();
-    APP_ERROR_CHECK(err_code);
-}
-
+/**@brief Function for handling advertising events.
+ *
+ * @details This function will be called for advertising events which are passed to the application.
+ *
+ * @param[in] ble_adv_evt  Advertising event.
+ */
 static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
 {
     uint32_t err_code;
@@ -391,11 +232,10 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
     switch (ble_adv_evt)
     {
         case BLE_ADV_EVT_FAST:
-            err_code = bsp_indication_set(BSP_INDICATE_ADVERTISING);
-            APP_ERROR_CHECK(err_code);
+            //err_code = bsp_indication_set(BSP_INDICATE_ADVERTISING);
+            //APP_ERROR_CHECK(err_code);
             break;
         case BLE_ADV_EVT_IDLE:
-            sleep_mode_enter();
             break;
         default:
             break;
@@ -403,7 +243,11 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
 }
 
 
-
+/**@brief Function for handling BLE events.
+ *
+ * @param[in]   p_ble_evt   Bluetooth stack event.
+ * @param[in]   p_context   Unused.
+ */
 static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
 {
     uint32_t err_code;
@@ -470,7 +314,10 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
 }
 
 
-
+/**@brief Function for the SoftDevice initialization.
+ *
+ * @details This function initializes the SoftDevice and the BLE event interrupt.
+ */
 void ble_stack_init(void)
 {
     ret_code_t err_code;
@@ -492,6 +339,8 @@ void ble_stack_init(void)
     NRF_SDH_BLE_OBSERVER(m_ble_observer, APP_BLE_OBSERVER_PRIO, ble_evt_handler, NULL);
 }
 
+
+/**@brief Function for handling events from the GATT library. */
 void gatt_evt_handler(nrf_ble_gatt_t * p_gatt, nrf_ble_gatt_evt_t const * p_evt)
 {
     if ((m_conn_handle == p_evt->conn_handle) && (p_evt->evt_id == NRF_BLE_GATT_EVT_ATT_MTU_UPDATED))
@@ -505,6 +354,7 @@ void gatt_evt_handler(nrf_ble_gatt_t * p_gatt, nrf_ble_gatt_evt_t const * p_evt)
 }
 
 
+/**@brief Function for initializing the GATT library. */
 void gatt_init(void)
 {
     ret_code_t err_code;
@@ -518,6 +368,13 @@ void gatt_init(void)
 
 
 
+/**@brief   Function for handling app_uart events.
+ *
+ * @details This function will receive a single character from the app_uart module and append it to
+ *          a string. The string will be be sent over BLE when the last character received was a
+ *          'new line' '\n' (hex 0x0A) or if the string has reached the maximum data length.
+ */
+/**@snippet [Handling the data received over UART] */
 void uart_event_handle(app_uart_evt_t * p_event)
 {
     static uint8_t data_array[BLE_NUS_MAX_DATA_LEN];
@@ -568,7 +425,12 @@ void uart_event_handle(app_uart_evt_t * p_event)
             break;
     }
 }
+/**@snippet [Handling the data received over UART] */
 
+
+/**@brief  Function for initializing the UART module.
+ */
+/**@snippet [UART Initialization] */
 void uart_init(void)
 {
     uint32_t                     err_code;
@@ -602,7 +464,7 @@ void uart_init(void)
  */
 void advertising_init(void)
 {
-    uint32_t               err_code;
+    uint32_t  err_code;
     ble_advertising_init_t init;
 
     memset(&init, 0, sizeof(init));
@@ -626,13 +488,6 @@ void advertising_init(void)
 }
 
 
-static void power_management_init(void)
-{
-    ret_code_t err_code;
-    err_code = nrf_pwr_mgmt_init();
-    APP_ERROR_CHECK(err_code);
-}
-
 /**@brief Function for starting advertising.
  */
 void advertising_start(void)
@@ -640,66 +495,288 @@ void advertising_start(void)
     uint32_t err_code = ble_advertising_start(&m_advertising, BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
 }
+
+
 static void timer_handler(nrf_timer_event_t event_type, void* p_context)
 {
+  static uint32_t i,x, val;
+  bool status1, status2, status3, status4;
   
-}
-void i2csensor_sampling_ble_handler(void *p_context)
-{
-    uint16_t bytes_to_send;
-    ret_code_t err_code;
-    uint8_t nus_string[50];
-    if(MPU6050_ReadGyro(&GyroValue[0], &GyroValue[1], &GyroValue[2]) == true) 
+  val = (i++) % (5);
+  x = val + 22;
+  switch(event_type)
+  {
+    
+    case NRF_TIMER_EVENT_COMPARE0:
+    status1 = nrf_gpio_pin_out_read(CASCADE_PIN_2);
+    status2 = nrf_gpio_pin_out_read(CASCADE_PIN_3);
+    status3 = nrf_gpio_pin_out_read(CASCADE_PIN_4);
+    status4 = nrf_gpio_pin_out_read(CASCADE_PIN_5);
+    nrf_gpio_pin_toggle(x);
+    if ((status1 == 1) && (status2 == 1) && (status3 == 1) && (status4 == 1))
     {
-      NRF_LOG_INFO("GYRO Values: x = %d  y = %d  z = %d", GyroValue[0], GyroValue[1], GyroValue[2]);
-      bytes_to_send = sprintf(nus_string,"%d:%d:%d\r\n",GyroValue[0], GyroValue[1], GyroValue[2]);
-      err_code = ble_nus_data_send(&m_nus, nus_string, &bytes_to_send, m_conn_handle);
+      nrf_gpio_pin_clear(CASCADE_PIN_2); // Turn off the LED
+      nrf_gpio_pin_clear(CASCADE_PIN_3); // Turn off the LED
+      nrf_gpio_pin_clear(CASCADE_PIN_4); // Turn off the LED
+      nrf_gpio_pin_clear(CASCADE_PIN_5); // Turn off the LED
     }
     
+    break;
+    default:
+    // Nothing
+    break;
+  }
+}
+
+
+void saadc_sampling_event_init(void)
+{
+    ret_code_t err_code;
+    err_code = nrf_drv_ppi_init();
+
+    APP_ERROR_CHECK(err_code);
     
+    nrf_drv_timer_config_t timer_config = NRF_DRV_TIMER_DEFAULT_CONFIG;
+    timer_config.frequency = NRF_TIMER_FREQ_31250Hz;
+    err_code = nrf_drv_timer_init(&m_timer, &timer_config, timer_handler);
+    APP_ERROR_CHECK(err_code);
+
+    /* setup m_timer for compare event */
+    uint32_t ticks = nrf_drv_timer_ms_to_ticks(&m_timer,SAADC_SAMPLE_RATE);
+    nrf_drv_timer_extended_compare(&m_timer, NRF_TIMER_CC_CHANNEL0, ticks, NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK, false);
+    nrf_drv_timer_enable(&m_timer);
+    uint32_t timer_compare_event_addr = nrf_drv_timer_compare_event_address_get(&m_timer, NRF_TIMER_CC_CHANNEL0);
+    uint32_t saadc_sample_event_addr = nrf_drv_saadc_sample_task_get();
+
+    /* setup ppi channel so that timer compare event is triggering sample task in SAADC */
+    err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel);
+    APP_ERROR_CHECK(err_code);
     
+    err_code = nrf_drv_ppi_channel_assign(m_ppi_channel, timer_compare_event_addr, saadc_sample_event_addr);
+    APP_ERROR_CHECK(err_code);
+}
+
+
+void saadc_sampling_event_enable(void)
+{
+    ret_code_t err_code = nrf_drv_ppi_channel_enable(m_ppi_channel);
+    APP_ERROR_CHECK(err_code);
+}
+
+
+/** @brief Called whenver data is read from ADC and sends data via BLE 
+*/ 
+void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
+{
+
+    if (p_event->type == NRF_DRV_SAADC_EVT_DONE)
+    {
+        ret_code_t err_code;
+        uint16_t adc_value;
+        uint8_t value[SAADC_SAMPLES_IN_BUFFER*2];
+        uint16_t bytes_to_send;
+     
+        // set buffers
+        err_code = nrf_drv_saadc_buffer_convert(p_event->data.done.p_buffer, SAADC_SAMPLES_IN_BUFFER);
+        APP_ERROR_CHECK(err_code);
+						
+        /*
+        // print samples on hardware UART and parse data for BLE transmission
+        printf("ADC event number: %d\r\n",(int)m_adc_evt_counter);
+        for (int i = 0; i < SAADC_SAMPLES_IN_BUFFER; i++)
+        {
+            printf("%d\r\n", p_event->data.done.p_buffer[i]);
+
+            adc_value = p_event->data.done.p_buffer[i];
+            value[i*2] = adc_value;
+            value[(i*2)+1] = adc_value >> 8;
+        }
+        */
+
+        register int channel_0_val = p_event->data.done.p_buffer[1];  // u
+        register int channel_1_val = p_event->data.done.p_buffer[0];
+        register int channel_2_val = p_event->data.done.p_buffer[5];
+        register int channel_3_val = p_event->data.done.p_buffer[2];
+        register int channel_4_val = p_event->data.done.p_buffer[3];
+        register int channel_5_val = p_event->data.done.p_buffer[4];
+        int pulsing_info; 
+
+        // strain detection and accelerometer algorithm
+        if(get_automatic_pulsing_state() == ON_STATE)
+        { 
+            pulsing_info = sensor_detection(channel_0_val, channel_1_val, channel_2_val, 
+                                            channel_3_val, channel_4_val, channel_5_val); 
+        }
+       
+        // Send data over BLE via NUS service. Create string from samples and send string with correct length.        
+        // Data is to be sent over the data channel
+        uint8_t nus_string[50];
+        bytes_to_send = sprintf(nus_string, 
+                                "D: %d. %d. %d. %d. %d. %d. %d.",
+                                channel_0_val,
+                                channel_1_val,
+                                channel_2_val,
+                                channel_3_val,
+                                channel_4_val,
+                                channel_5_val,
+                                pulsing_info);                       
+        
+        err_code = ble_nus_data_send(&m_nus, nus_string, &bytes_to_send, m_conn_handle);
+        if ((err_code != NRF_ERROR_INVALID_STATE) && (err_code != NRF_ERROR_NOT_FOUND))
+        {
+            APP_ERROR_CHECK(err_code);
+        }
+
+        m_adc_evt_counter++;
+    }
+}
+
+void send_log_via_bluetooth(char* message)
+{
+    ret_code_t err_code;
+    uint8_t nus_string[50];
+    uint16_t bytes_to_send;
+    
+    char log_message[50] = "L:";
+    bytes_to_send = sprintf(nus_string, "%s%s", log_message, message);
+    printf("DATA SENT VIA BLE:::%s\n\r", nus_string);
+    err_code = ble_nus_data_send(&m_nus, nus_string, &bytes_to_send, m_conn_handle);
     if ((err_code != NRF_ERROR_INVALID_STATE) && (err_code != NRF_ERROR_NOT_FOUND))
     {
         APP_ERROR_CHECK(err_code);
     }
-
-
 }
-void sw_timer_create(void)
+
+void send_state_via_bluetooth(char* state)
 {
-  ret_code_t err_code;
-  err_code = app_timer_create(&i2c_ble_sampler_id, APP_TIMER_MODE_REPEATED, i2csensor_sampling_ble_handler);
-  APP_ERROR_CHECK(err_code);
-
+    ret_code_t err_code;
+    uint8_t nus_string[50];
+    uint16_t bytes_to_send;
+    
+    char state_message[50] = "S:";
+    bytes_to_send = sprintf(nus_string, "%s%s", state_message, state);
+    printf("DATA SENT VIA BLE:::%s\n\r", nus_string);
+    err_code = ble_nus_data_send(&m_nus, nus_string, &bytes_to_send, m_conn_handle);
+    if ((err_code != NRF_ERROR_INVALID_STATE) && (err_code != NRF_ERROR_NOT_FOUND))
+    {
+        APP_ERROR_CHECK(err_code);
+    }
 }
-void sw_timer_init(void)
+
+void saadc_init(void)
 {
-  sw_timer_create();
-  app_timer_start(i2c_ble_sampler_id, FREQUENCY, NULL);
+    ret_code_t err_code;
+	
+    nrf_drv_saadc_config_t saadc_config = NRF_DRV_SAADC_DEFAULT_CONFIG;
+    saadc_config.resolution = NRF_SAADC_RESOLUTION_12BIT;
+    
+    // ADC Channel Configuration 
+    nrf_saadc_channel_config_t channel_0_config = 
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN0); 
+    channel_0_config.gain = NRF_SAADC_GAIN1_4;
+    channel_0_config.reference = NRF_SAADC_REFERENCE_VDD4;
+    
+    nrf_saadc_channel_config_t channel_1_config = 
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN1); 
+    channel_1_config.gain = NRF_SAADC_GAIN1_4;
+    channel_1_config.reference = NRF_SAADC_REFERENCE_VDD4;
+    
+    nrf_saadc_channel_config_t channel_2_config =
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN4);
+    channel_2_config.gain = NRF_SAADC_GAIN1_4;
+    channel_2_config.reference = NRF_SAADC_REFERENCE_VDD4;
+	
+    nrf_saadc_channel_config_t channel_3_config =
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN5);
+    channel_3_config.gain = NRF_SAADC_GAIN1_4;
+    channel_3_config.reference = NRF_SAADC_REFERENCE_VDD4;
 
+    nrf_saadc_channel_config_t channel_4_config =
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN6);
+    channel_4_config.gain = NRF_SAADC_GAIN1_4;
+    channel_4_config.reference = NRF_SAADC_REFERENCE_VDD4;
+	
+    nrf_saadc_channel_config_t channel_5_config =
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN7);
+    channel_5_config.gain = NRF_SAADC_GAIN1_4;
+    channel_5_config.reference = NRF_SAADC_REFERENCE_VDD4;				
+	    
+    err_code = nrf_drv_saadc_init(&saadc_config, saadc_callback);
+    APP_ERROR_CHECK(err_code);
+
+    err_code = nrf_drv_saadc_channel_init(0, &channel_0_config);
+    APP_ERROR_CHECK(err_code);
+    err_code = nrf_drv_saadc_channel_init(1, &channel_1_config);
+    APP_ERROR_CHECK(err_code);
+    err_code = nrf_drv_saadc_channel_init(2, &channel_2_config);
+    APP_ERROR_CHECK(err_code);
+    err_code = nrf_drv_saadc_channel_init(3, &channel_3_config);
+    APP_ERROR_CHECK(err_code);
+    err_code = nrf_drv_saadc_channel_init(4, &channel_4_config);
+    APP_ERROR_CHECK(err_code);
+    err_code = nrf_drv_saadc_channel_init(5, &channel_5_config);
+    APP_ERROR_CHECK(err_code);	
+
+    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[0],SAADC_SAMPLES_IN_BUFFER);
+    APP_ERROR_CHECK(err_code);   
+    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[1],SAADC_SAMPLES_IN_BUFFER);
+    APP_ERROR_CHECK(err_code);
 }
 
 
 
-
+/**@brief Handler for shutdown preparation.
+ *
+ * @details During shutdown procedures, this function will be called at a 1 second interval
+ *          untill the function returns true. When the function returns true, it means that the
+ *          app is ready to reset to DFU mode.
+ *
+ * @param[in]   event   Power manager event.
+ *
+ * @retval  True if shutdown is allowed by this power manager handler, otherwise false.
+ */
 static bool app_shutdown_handler(nrf_pwr_mgmt_evt_t event)
 {
     switch (event)
     {
         case NRF_PWR_MGMT_EVT_PREPARE_DFU:
             NRF_LOG_INFO("Power management wants to reset to DFU mode.");
-            
+            // YOUR_JOB: Get ready to reset into DFU mode
+            //
+            // If you aren't finished with any ongoing tasks, return "false" to
+            // signal to the system that reset is impossible at this stage.
+            //
+            // Here is an example using a variable to delay resetting the device.
+            //
+            // if (!m_ready_for_reset)
+            // {
+            //      return false;
+            // }
+            // else
+            //{
+            //
+            //    // Device ready to enter
+            //    uint32_t err_code;
+            //    err_code = sd_softdevice_disable();
+            //    APP_ERROR_CHECK(err_code);
+            //    err_code = app_timer_stop_all();
+            //    APP_ERROR_CHECK(err_code);
+            //}
             break;
 
         default:
-            
+            // YOUR_JOB: Implement any of the other events available from the power management module:
+            //      -NRF_PWR_MGMT_EVT_PREPARE_SYSOFF
+            //      -NRF_PWR_MGMT_EVT_PREPARE_WAKEUP
+            //      -NRF_PWR_MGMT_EVT_PREPARE_RESET
             return true;
     }
 
     NRF_LOG_INFO("Power management allowed to reset to DFU mode.");
     return true;
 }
-
+/**@brief Register application shutdown handler with priority 0.
+ */
 NRF_PWR_MGMT_HANDLER_REGISTER(app_shutdown_handler, 0);
 
 
@@ -709,10 +786,20 @@ static void buttonless_dfu_sdh_state_observer(nrf_sdh_state_evt_t state, void * 
 {
     if (state == NRF_SDH_EVT_STATE_DISABLED)
     {
+        // Softdevice was disabled before going into reset. Inform bootloader to skip CRC on next boot.
         nrf_power_gpregret2_set(BOOTLOADER_DFU_SKIP_CRC);
+
+        //Go to system off.
         nrf_pwr_mgmt_shutdown(NRF_PWR_MGMT_SHUTDOWN_GOTO_SYSOFF);
     }
 }
+
+
+
+/**@brief Function for handling Peer Manager events.
+ *
+ * @param[in] p_evt  Peer Manager event.
+ */
 static void pm_evt_handler(pm_evt_t const * p_evt)
 {
     pm_handler_on_pm_evt(p_evt);
@@ -729,6 +816,8 @@ void peer_manager_init()
     APP_ERROR_CHECK(err_code);
 
     memset(&sec_param, 0, sizeof(ble_gap_sec_params_t));
+
+    // Security parameters to be used for all security procedures.
     sec_param.bond           = SEC_PARAM_BOND;
     sec_param.mitm           = SEC_PARAM_MITM;
     sec_param.lesc           = SEC_PARAM_LESC;
@@ -782,6 +871,11 @@ NRF_SDH_STATE_OBSERVER(m_buttonless_dfu_state_obs, 0) =
 };
 
 
+// YOUR_JOB: Update this code if you want to do anything given a DFU event (optional).
+/**@brief Function for handling dfu events from the Buttonless Secure DFU service
+ *
+ * @param[in]   event   Event from the Buttonless Secure DFU service.
+ */
 void ble_dfu_evt_handler(ble_dfu_buttonless_evt_type_t event)
 {
     switch (event) 
@@ -796,7 +890,9 @@ void ble_dfu_evt_handler(ble_dfu_buttonless_evt_type_t event)
             config.ble_adv_on_disconnect_disabled = true;
             ble_advertising_modes_config_set(&m_advertising, &config);
 
-         
+            // Disconnect all other bonded devices that currently are connected.
+            // This is required to receive a service changed indication
+            // on bootup after a successful (or aborted) Device Firmware Update.
             uint32_t conn_count = ble_conn_state_for_each_connected(disconnect, NULL);
             NRF_LOG_INFO("Disconnected %d links.", conn_count);
             break;
@@ -826,4 +922,3 @@ void ble_dfu_evt_handler(ble_dfu_buttonless_evt_type_t event)
             break;
     }
 }
-
